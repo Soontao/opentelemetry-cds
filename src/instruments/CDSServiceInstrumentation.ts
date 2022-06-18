@@ -10,6 +10,7 @@ import { DbSystemValues, SemanticAttributes } from "@opentelemetry/semantic-conv
 import { CDSSemanticAttributes } from "../attributes";
 import { version } from "../version.json";
 import { CDSBaseServiceInstrumentation } from "./CDSBaseInstrumentation";
+import { getEntityNameFromQuery } from "./utils";
 
 export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
 
@@ -36,13 +37,13 @@ export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
           return function dispatch(this: any) {
             const { name, kind } = this;
 
-            const req = arguments[0] ?? {};
+            const req = arguments?.[0] ?? {};
             const attributes = {
               [SemanticAttributes.CODE_FILEPATH]: "@sap/cds/lib/serve/Service-dispatch.js",
               [SemanticAttributes.CODE_FUNCTION]: "dispatch",
               [SemanticAttributes.ENDUSER_ID]: req?.user?.id,
               [CDSSemanticAttributes.TENANT_ID]: req?.tenant,
-              [CDSSemanticAttributes.CDS_QUERY_ENTITY]: req?.query?.target,
+              [CDSSemanticAttributes.CDS_QUERY_ENTITY]: req?.target,
             };
 
             if (kind === "app-service") {
@@ -69,8 +70,15 @@ export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
               }
             }
 
+            const spanParts = [
+              kind,
+              name,
+              req?.event ?? Object.keys(req?.query ?? {})[0],
+              req?.target?.name ?? getEntityNameFromQuery(req?.query),
+            ].filter(Boolean);
+
             return inst.runWithNewContext(
-              `${kind ?? "unknown kind"} ${name ?? "cds.Service"}.dispatch`,
+              spanParts.join(" "),
               () => original.apply(this, arguments),
               { attributes }
             );
