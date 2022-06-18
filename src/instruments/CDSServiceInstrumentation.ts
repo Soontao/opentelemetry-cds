@@ -25,7 +25,16 @@ export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
     );
 
 
-    module.files.push(new InstrumentationNodeModuleFile<any>(
+    module.files.push(
+      this.createPatchForServiceDispatch(),
+
+    );
+
+    return module;
+  }
+
+  private createPatchForServiceDispatch() {
+    return new InstrumentationNodeModuleFile<any>(
       "@sap/cds/lib/serve/Service-dispatch.js",
       ["*"],
       /**
@@ -87,11 +96,9 @@ export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
         return exportedModule;
       },
       (exportedModule) => {
-        this._unwrap(exportedModule.prototype, "run");
+        this._unwrap(exportedModule, "dispatch");
       },
-    ));
-
-    return module;
+    );
   }
 
 }

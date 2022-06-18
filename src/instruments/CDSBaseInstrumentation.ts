@@ -26,14 +26,15 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
     return this.tracer.startSpan(newSpanName, options, this.createNewContext());
   }
 
-  protected async runWithNewContext<T = any>(
+  protected runWithNewContext<T = any>(
     newSpanName: string,
-    fn: (...args: Array<any>) => T | Promise<T>,
+    fn: (...args: Array<any>) => T,
     options?: SpanOptions
-  ): Promise<T> {
-    return new Promise((resolve, reject) => {
-      const newSpan = this.createSubSpan(newSpanName, options);
-      api.context.with(api.trace.setSpan(api.context.active(), newSpan), () => {
+  ): T {
+    const newSpan = this.createSubSpan(newSpanName, options);
+    return api.context.with(
+      api.trace.setSpan(api.context.active(), newSpan),
+      () => {
         let r: any;
 
         try {
@@ -41,17 +42,16 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
         }
         catch (error) {
           newSpan.end();
-          return reject(error);
+          throw error;
         }
 
         if (r instanceof Promise) {
-          return r.then(resolve).catch(reject).finally(() => newSpan.end());
+          return r.finally(() => newSpan.end());
         }
         else {
           return newSpan.end();
         }
 
-      });
-    });
+      }) as unknown as any;
   }
 }

@@ -2,7 +2,9 @@
 import { JaegerExporter } from "@opentelemetry/exporter-jaeger";
 import { registerInstrumentations } from "@opentelemetry/instrumentation";
 import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express";
+import { GenericPoolInstrumentation } from "@opentelemetry/instrumentation-generic-pool";
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
+import { NetInstrumentation } from "@opentelemetry/instrumentation-net";
 import { Resource } from "@opentelemetry/resources";
 import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base";
 import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node";
@@ -11,12 +13,12 @@ import os from "os";
 import path from "path";
 import process from "process";
 import { CDSServiceInstrumentation } from "./instruments/CDSServiceInstrumentation";
+import { ODataAdapterInstrumentation } from "./instruments/ODataAdapterInstrumentation";
 
 const provider = new NodeTracerProvider({
   resource: new Resource({
     [SemanticResourceAttributes.SERVICE_NAME]: process.env.SERVICE_NAME ?? path.basename(process.cwd()),
     [SemanticResourceAttributes.PROCESS_PID]: process.pid,
-    [SemanticResourceAttributes.PROCESS_COMMAND_ARGS]: process?.argv?.join(" "),
     [SemanticResourceAttributes.HOST_ARCH]: os.arch(),
     [SemanticResourceAttributes.HOST_NAME]: os.hostname(),
   }),
@@ -33,6 +35,9 @@ registerInstrumentations({
     new HttpInstrumentation(),
     new ExpressInstrumentation(),
     new CDSServiceInstrumentation(),
+    new ODataAdapterInstrumentation(),
+    new GenericPoolInstrumentation(),
+    new NetInstrumentation(),
   ],
 });
 
