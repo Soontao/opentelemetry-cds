@@ -13,7 +13,7 @@ import { CDSServiceInstrumentation } from "./instruments/CDSServiceInstrumentati
 
 const provider = new NodeTracerProvider({
   resource: new Resource({
-    [SemanticResourceAttributes.SERVICE_NAME]: process.env.SERVICE_NAME ?? path.dirname(process.cwd()),
+    [SemanticResourceAttributes.SERVICE_NAME]: process.env.SERVICE_NAME ?? path.basename(process.cwd()),
   }),
 });
 

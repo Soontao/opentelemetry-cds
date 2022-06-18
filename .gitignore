@@ -114,3 +114,6 @@ lib
 
 # test
 junit.xml
+
+# bin
+jaeger-all-in-one
