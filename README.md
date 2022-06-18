@@ -24,7 +24,7 @@ npm i -S opentelemetry-cds
 ## Screenshots
 
 
-![](https://res.cloudinary.com/drxgh9gqs/image/upload/c_scale,h_728/v1655551349/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE_2022-06-18_191419_wjn6rw.png)
+![](https://res.cloudinary.com/drxgh9gqs/image/upload/c_scale,h_960/v1655551526/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE_2022-06-18_192216_g1faje.png)
 
 
 ## [LICENSE](./LICENSE)
