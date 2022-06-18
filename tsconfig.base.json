@@ -8,6 +8,7 @@
     "useUnknownInCatchVariables": false,
     "sourceMap": true,
     "outDir": "lib",
+    "resolveJsonModule": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
