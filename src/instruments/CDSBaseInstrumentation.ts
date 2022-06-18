@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import api, { SpanOptions } from "@opentelemetry/api";
+import api, { SpanOptions, SpanStatusCode } from "@opentelemetry/api";
 import { InstrumentationBase } from "@opentelemetry/instrumentation";
 
 export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase {
@@ -41,15 +41,24 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
           r = fn();
         }
         catch (error) {
+          newSpan.recordException(error);
+          newSpan.setStatus({ code: SpanStatusCode.ERROR });
           newSpan.end();
           throw error;
         }
 
         if (r instanceof Promise) {
-          return r.finally(() => newSpan.end());
+          return r
+            .catch(error => {
+              newSpan.recordException(error);
+              newSpan.setStatus({ code: SpanStatusCode.ERROR });
+              throw error;
+            })
+            .finally(() => newSpan.end());
         }
         else {
-          return newSpan.end();
+          newSpan.end();
+          return r;
         }
 
       }) as unknown as any;
