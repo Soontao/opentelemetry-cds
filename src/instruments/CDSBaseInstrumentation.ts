@@ -4,12 +4,14 @@ import { InstrumentationBase } from "@opentelemetry/instrumentation";
 
 export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase {
 
-  getCurrentContext() { return api.trace.getSpan(api.context.active()); }
+  private getCurrentContext() {
+    return api.trace.getSpan(api.context.active()) ?? this.tracer.startSpan("Unknown");
+  }
 
-  createNewContext() {
+  private createNewContext() {
     return api.trace.setSpan(
       api.context.active(),
-      this.getCurrentContext() ?? this.tracer.startSpan("Unknown")
+      this.getCurrentContext()
     );
   }
 
@@ -20,7 +22,7 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
    * @param options
    * @returns
    */
-  createSubSpan(newSpanName: string, options?: SpanOptions) {
+  private createSubSpan(newSpanName: string, options?: SpanOptions) {
     return this.tracer.startSpan(newSpanName, options, this.createNewContext());
   }
 
