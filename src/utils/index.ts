@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable max-len */
 
 import api, { SpanOptions } from "@opentelemetry/api";
-import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
 
 const tracer = api.trace.getTracer("opentelemetry-cds");
 
@@ -31,15 +31,31 @@ const createSubSpan = (newSpanName: string, options?: SpanOptions) => {
 // };
 
 
-export async function runWithNewContext<T = any>(newSpanName: string, fn: (...args: Array<any>) => Promise<T>, options?: SpanOptions ): Promise<T> {
+export async function runWithNewContext<T = any>(
+  newSpanName: string,
+  fn: (...args: Array<any>) => T | Promise<T>,
+  options?: SpanOptions
+): Promise<T> {
   return new Promise((resolve, reject) => {
-    const newSpan = createSubSpan(newSpanName, Object.assign({}, options ?? {}, {
-      attributes: {
-        [SemanticAttributes.CODE_FUNCTION]: fn.name ?? "Unknown"
-      },
-    }));
+    const newSpan = createSubSpan(newSpanName, options);
     api.context.with(api.trace.setSpan(api.context.active(), newSpan), () => {
-      fn().then(resolve).catch(reject).finally(() => newSpan.end());
+      let r: any;
+
+      try {
+        r = fn();
+      }
+      catch (error) {
+        newSpan.end();
+        return reject(error);
+      }
+
+      if (r instanceof Promise) {
+        return r.then(resolve).catch(reject).finally(() => newSpan.end());
+      }
+      else {
+        return newSpan.end();
+      }
+
     });
   });
 }
