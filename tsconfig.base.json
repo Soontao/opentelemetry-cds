@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "charset": "UTF-8",
+    "newLine": "lf",
+    "target": "ES2019",
+    "module": "CommonJS",
+    "skipLibCheck": true,
+    "useUnknownInCatchVariables": false,
+    "sourceMap": true,
+    "outDir": "lib",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "declaration": true,
+    "strict": true,
+    "lib": [
+      "ES2019"
+    ]
+  }
+}
