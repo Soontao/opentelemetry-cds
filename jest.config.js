@@ -21,13 +21,5 @@ module.exports = {
     "js",
     "json"
   ],
-  coverageThreshold: {
-    global: {
-      branches: 80,
-      functions: 85,
-      lines: 85,
-      statements: 85,
-    },
-  },
   reporters: ["default", ["jest-junit", { outputDirectory: "coverage" }]]
 };
