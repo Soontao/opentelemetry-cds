@@ -27,9 +27,9 @@ npm i -S opentelemetry-cds
 
 - [x] Service-dispatch
 - [x] OData Adapter
-  - [x] BatchProcessor.process
-  - [x] BatchedRequestExecutor.execute
-  - [x] dispatcherUtils.createOdataService
+  - [x] `process`
+  - [x] `execute`
+  - [x] `createOdataService`
 - [x] CDS Compiler
   - [x] edm/edmx/edm.all/edmx.all
 
