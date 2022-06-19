@@ -1,9 +1,9 @@
 # OpenTelemetry for CDS
 
-> `OpenTelemetry` support for `CDS nodejs runtime`
-
 ![GitHub top language](https://img.shields.io/github/languages/top/Soontao/opentelemetry-cds)
 [![node-test](https://github.com/Soontao/opentelemetry-cds/actions/workflows/nodejs.yml/badge.svg)](https://github.com/Soontao/opentelemetry-cds/actions/workflows/nodejs.yml)
+
+> `OpenTelemetry` support for `CDS nodejs runtime`
 
 ## How to use it
 
