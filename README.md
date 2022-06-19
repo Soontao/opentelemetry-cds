@@ -46,7 +46,7 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 ## Screenshots
 
 
-![](https://res.cloudinary.com/drxgh9gqs/image/upload/v1655633158/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE_2022-06-19_180449_qxy01p.png)
+![](https://res.cloudinary.com/drxgh9gqs/image/upload/q_51/v1655555236/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE_2022-06-18_202702_m9lrg6.png)
 
 
 ## [LICENSE](./LICENSE)
