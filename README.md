@@ -2,6 +2,9 @@
 
 > `OpenTelemetry` support for `CDS nodejs runtime`
 
+![GitHub top language](https://img.shields.io/github/languages/top/Soontao/opentelemetry-cds)
+[![node-test](https://github.com/Soontao/opentelemetry-cds/actions/workflows/nodejs.yml/badge.svg)](https://github.com/Soontao/opentelemetry-cds/actions/workflows/nodejs.yml)
+
 ## How to use it
 
 > install this package firstly
@@ -43,7 +46,7 @@ OTEL_EXPORTER_OTLP_ENDPOINT=https://localhost:4318
 ## Screenshots
 
 
-![](https://res.cloudinary.com/drxgh9gqs/image/upload/v1655633158/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE_2022-06-19_180449_qxy01p.pngg)
+![](https://res.cloudinary.com/drxgh9gqs/image/upload/v1655633158/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE_2022-06-19_180449_qxy01p.png)
 
 
 ## [LICENSE](./LICENSE)
