@@ -1,5 +1,5 @@
 
-import { JaegerExporter } from "@opentelemetry/exporter-jaeger";
+import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-grpc";
 import { registerInstrumentations } from "@opentelemetry/instrumentation";
 import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express";
 import { GenericPoolInstrumentation } from "@opentelemetry/instrumentation-generic-pool";
@@ -24,9 +24,9 @@ const provider = new NodeTracerProvider({
   }),
 });
 
-const exporter = new JaegerExporter();
+const exporter = new OTLPTraceExporter();
 
-provider.addSpanProcessor(new BatchSpanProcessor(exporter));
+provider.addSpanProcessor(new BatchSpanProcessor(exporter, {}));
 
 provider.register();
 
@@ -41,3 +41,7 @@ registerInstrumentations({
   ],
 });
 
+
+["SIGINT", "SIGTERM"].forEach(signal => {
+  process.on(signal, () => provider.shutdown().catch(console.error));
+});

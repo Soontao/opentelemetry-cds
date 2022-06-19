@@ -48,9 +48,9 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
           return function execute(this: any) {
             const plainHttpRequest = this?._request?.getIncomingRequest?.();
             const spanParts = [
+              "BatchedRequestExecutor.execute",
               plainHttpRequest?.method,
               plainHttpRequest?.url,
-              "BatchedRequestExecutor.execute"
             ].filter(Boolean);
             return inst.runWithNewContext(
               spanParts.join(" "),
