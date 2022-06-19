@@ -12,6 +12,7 @@ import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions"
 import os from "os";
 import path from "path";
 import process from "process";
+import { CDSCompilerServiceInstrumentation } from "./instruments/CDSCompilerInstrumentation";
 import { CDSServiceInstrumentation } from "./instruments/CDSServiceInstrumentation";
 import { ODataAdapterInstrumentation } from "./instruments/ODataAdapterInstrumentation";
 
@@ -35,6 +36,7 @@ registerInstrumentations({
     new HttpInstrumentation(),
     new ExpressInstrumentation(),
     new CDSServiceInstrumentation(),
+    new CDSCompilerServiceInstrumentation(),
     new ODataAdapterInstrumentation(),
     new GenericPoolInstrumentation(),
     new NetInstrumentation(),

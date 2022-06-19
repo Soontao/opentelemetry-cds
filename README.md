@@ -27,7 +27,18 @@ npm i -S opentelemetry-cds
   - [x] BatchProcessor.process
   - [x] BatchedRequestExecutor.execute
   - [x] dispatcherUtils.createOdataService
+- [x] CDS Compiler
+  - [x] edm/edmx/edm.all/edmx.all
 
+
+## OTLP Endpoint
+
+> opentelemetry-cds is using `opentelemetry-http` protocol as exporter, just ref [@opentelemetry/exporter-trace-otlp-http](https://www.npmjs.com/package/@opentelemetry/exporter-trace-otlp-http) document to configure it by environment 
+
+
+```bash
+OTEL_EXPORTER_OTLP_ENDPOINT=https://localhost:4318
+```
 
 ## Screenshots
 

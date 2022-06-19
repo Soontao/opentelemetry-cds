@@ -7,6 +7,7 @@ import {
   InstrumentationNodeModuleDefinition,
   InstrumentationNodeModuleFile
 } from "@opentelemetry/instrumentation";
+import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
 import { version } from "../version.json";
 import { CDSBaseServiceInstrumentation } from "./CDSBaseInstrumentation";
 
@@ -36,8 +37,9 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
   }
 
   private createPatchForODataExecutor() {
+    const moduleName = `${_okra}/odata-server/batch/BatchedRequestExecutor.js`;
     return new InstrumentationNodeModuleFile<any>(
-      `${_okra}/odata-server/batch/BatchedRequestExecutor.js`,
+      moduleName,
       ["5.*"],
       /**
        * @param exportedModule 
@@ -48,13 +50,19 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
           return function execute(this: any) {
             const plainHttpRequest = this?._request?.getIncomingRequest?.();
             const spanParts = [
-              "BatchedRequestExecutor.execute",
+              "batch.execute",
               plainHttpRequest?.method,
               plainHttpRequest?.url,
             ].filter(Boolean);
             return inst.runWithNewContext(
               spanParts.join(" "),
               () => original.apply(this, arguments),
+              {
+                attributes: {
+                  [SemanticAttributes.CODE_FILEPATH]: moduleName,
+                  [SemanticAttributes.CODE_FUNCTION]: "execute"
+                }
+              }
             );
           };
         });
@@ -68,22 +76,15 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
 
 
   private createPatchForExecuteOpenRequests() {
+    const moduleName = `${_okra}/odata-server/batch/BatchProcessor.js`;
     return new InstrumentationNodeModuleFile<any>(
-      `${_okra}/odata-server/batch/BatchProcessor.js`,
+      moduleName,
       ["5.*"],
       /**
        * @param exportedModule 
        */
       (exportedModule) => {
-        this._wrap(exportedModule.prototype, "process", (original: any) => {
-          const inst = this;
-          return function process(this: any) {
-            return inst.runWithNewContext(
-              "BatchProcessor.process",
-              () => original.apply(this, arguments),
-            );
-          };
-        });
+        this._simpleMeasure(exportedModule.prototype, moduleName, "process");
         return exportedModule;
       },
       (exportedModule) => {
@@ -92,7 +93,7 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
     );
   }
 
-  
+
   private createPatchForUtils() {
     return new InstrumentationNodeModuleFile<any>(
       `${_odata_v4}/utils/dispatcherUtils.js`,
@@ -105,7 +106,7 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
           const inst = this;
           return function createOdataService(this: any) {
             return inst.runWithNewContext(
-              `dispatcherUtils.createOdataService ${arguments?.[0]?.name}`,
+              `createOdataService for '${arguments?.[0]?.name}'`,
               () => original.apply(this, arguments),
             );
           };

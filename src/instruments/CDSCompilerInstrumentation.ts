@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-this-alias */
 /* eslint-disable prefer-rest-params */
 import {
   InstrumentationConfig,
@@ -20,28 +21,24 @@ export class CDSCompilerServiceInstrumentation extends CDSBaseServiceInstrumenta
     const module = new InstrumentationNodeModuleDefinition<any>(
       "@sap/cds-compiler",
       ["2.*"],
-      (moduleExport) => {
-        this._wrap(moduleExport, "edm", (original) => {
-          
-          this._wrap(original, "all", (originalAll) => {
-            return function edm(this: any) {
-              return originalAll.apply(this, arguments);
-            };
-          });
-          
-          return function edm(this: any) {
-            return original.apply(this, arguments);
-          };
-        });
-        return moduleExport;
-      },
-      moduleExport => {
-        this._unwrap(moduleExport, "edm");
-      }
+    );
+
+    module.files.push(
+      this._createSimplePatchFile(
+        "@sap/cds-compiler/lib/backends.js",
+        [
+          "preparedCsnToEdm",
+          "preparedCsnToEdmAll",
+          "preparedCsnToEdmx",
+          "preparedCsnToEdmxAll",
+        ]
+      )
     );
 
     return module;
   }
+
+
 }
 
 

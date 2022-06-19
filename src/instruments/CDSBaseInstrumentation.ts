@@ -1,6 +1,9 @@
+/* eslint-disable prefer-rest-params */
+/* eslint-disable @typescript-eslint/no-this-alias */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import api, { Context, SpanOptions, SpanStatusCode } from "@opentelemetry/api";
-import { InstrumentationBase } from "@opentelemetry/instrumentation";
+import { InstrumentationBase, InstrumentationNodeModuleFile } from "@opentelemetry/instrumentation";
+import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
 
 export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase {
 
@@ -34,6 +37,52 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
   private createSubSpan(newSpanName: string, options?: SpanOptions) {
     return this.tracer.startSpan(newSpanName, options, this.createNewContext());
   }
+
+  /**
+   * create a simple measure module function
+   * 
+   * @param moduleExport 
+   * @param moduleName 
+   * @param functionName 
+   */
+  protected _simpleMeasure(moduleExport: any, moduleName: string, functionName: string) {
+    this._wrap(moduleExport, functionName, (original) => {
+      const inst = this;
+      const redefined = function (this: any) {
+        return inst.runWithNewContext(
+          `${moduleName}.${functionName}`,
+          () => original.apply(this, arguments),
+          {
+            attributes: {
+              [SemanticAttributes.CODE_FILEPATH]: moduleName,
+              [SemanticAttributes.CODE_FUNCTION]: functionName,
+            }
+          }
+        );
+      };
+      Object.defineProperty(redefined, "name", { value: functionName });
+      return redefined;
+    });
+  }
+
+  protected _createSimplePatchFile(moduleName: string, functionNames: Array<string>) {
+    return new InstrumentationNodeModuleFile<any>(
+      moduleName,
+      ["*"],
+      moduleExport => {
+        for (const functionName of functionNames) {
+          this._simpleMeasure(moduleExport, moduleName, functionName);
+        }
+        return moduleExport;
+      },
+      moduleExport => {
+        for (const functionName of functionNames) {
+          this._unwrap(moduleExport, functionName);
+        }
+      }
+    );
+  }
+
 
   protected runWithNewContext<T = any>(
     newSpanName: string,
