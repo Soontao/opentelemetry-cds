@@ -24,18 +24,17 @@ export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
       ["5.*"]
     );
 
-
     module.files.push(
-      this.createPatchForServiceDispatch(),
-
+      this._createPatchForServiceDispatch(),
     );
 
     return module;
   }
 
-  private createPatchForServiceDispatch() {
+  private _createPatchForServiceDispatch() {
+    const moduleName = "@sap/cds/lib/serve/Service-dispatch.js";
     return new InstrumentationNodeModuleFile<any>(
-      "@sap/cds/lib/serve/Service-dispatch.js",
+      moduleName,
       ["*"],
       /**
        * @param exportedModule 
@@ -48,11 +47,12 @@ export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
 
             const req = arguments?.[0] ?? {};
             const attributes = {
-              [SemanticAttributes.CODE_FILEPATH]: "@sap/cds/lib/serve/Service-dispatch.js",
+              [SemanticAttributes.CODE_FILEPATH]: moduleName,
               [SemanticAttributes.CODE_FUNCTION]: "dispatch",
               [SemanticAttributes.ENDUSER_ID]: req?.user?.id,
-              [CDSSemanticAttributes.TENANT_ID]: req?.tenant,
+              [CDSSemanticAttributes.CDS_TENANT_ID]: req?.tenant,
               [CDSSemanticAttributes.CDS_QUERY_ENTITY]: req?.target,
+              [CDSSemanticAttributes.CDS_REQUEST_ID]: req?.id,
             };
 
             if (kind === "app-service") {

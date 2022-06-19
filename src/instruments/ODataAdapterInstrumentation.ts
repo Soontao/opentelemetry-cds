@@ -60,7 +60,7 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
               {
                 attributes: {
                   [SemanticAttributes.CODE_FILEPATH]: moduleName,
-                  [SemanticAttributes.CODE_FUNCTION]: "execute"
+                  [SemanticAttributes.CODE_FUNCTION]: "execute",
                 }
               }
             );

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable prefer-rest-params */
 /* eslint-disable @typescript-eslint/no-this-alias */
 /* eslint-disable @typescript-eslint/no-floating-promises */
@@ -5,6 +6,7 @@ import api, { Context, SpanOptions, SpanStatusCode } from "@opentelemetry/api";
 import { InstrumentationBase, InstrumentationNodeModuleFile } from "@opentelemetry/instrumentation";
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
 
+export type SpanNameHook = (thisValue: any, args: IArguments) => string;
 export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase {
 
   private getCurrentSpan() {
@@ -45,12 +47,12 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
    * @param moduleName 
    * @param functionName 
    */
-  protected _simpleMeasure(moduleExport: any, moduleName: string, functionName: string) {
+  protected _simpleMeasure(moduleExport: any, moduleName: string, functionName: string, spanNameHook?: SpanNameHook) {
     this._wrap(moduleExport, functionName, (original) => {
       const inst = this;
       const redefined = function (this: any) {
         return inst.runWithNewContext(
-          `${moduleName}.${functionName}`,
+          spanNameHook?.(this, arguments) ?? `${moduleName}.${functionName}`,
           () => original.apply(this, arguments),
           {
             attributes: {
@@ -65,18 +67,31 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
     });
   }
 
-  protected _createSimplePatchFile(moduleName: string, functionNames: Array<string>) {
+  protected _createSimplePatchFile(moduleName: string, functions: Array<string>): InstrumentationNodeModuleFile<any>;
+
+  protected _createSimplePatchFile(moduleName: string, functions: { [key: string]: SpanNameHook }): InstrumentationNodeModuleFile<any>;
+
+  protected _createSimplePatchFile(moduleName: string, functions: any) {
     return new InstrumentationNodeModuleFile<any>(
       moduleName,
       ["*"],
       moduleExport => {
-        for (const functionName of functionNames) {
-          this._simpleMeasure(moduleExport, moduleName, functionName);
+        if (functions instanceof Array) {
+          for (const functionName of functions) {
+            this._simpleMeasure(moduleExport, moduleName, functionName);
+          }
         }
+        else {
+          for (const [functionName, spanNameHook] of Object.entries(functions)) {
+            this._simpleMeasure(moduleExport, moduleName, functionName, spanNameHook as any);
+          }
+        }
+
+
         return moduleExport;
       },
       moduleExport => {
-        for (const functionName of functionNames) {
+        for (const functionName of functions instanceof Array ? functions : Object.keys(functions)) {
           this._unwrap(moduleExport, functionName);
         }
       }
