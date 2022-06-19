@@ -1,5 +1,5 @@
 
-import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-grpc";
+import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { registerInstrumentations } from "@opentelemetry/instrumentation";
 import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express";
 import { GenericPoolInstrumentation } from "@opentelemetry/instrumentation-generic-pool";
@@ -26,7 +26,7 @@ const provider = new NodeTracerProvider({
 
 const exporter = new OTLPTraceExporter();
 
-provider.addSpanProcessor(new BatchSpanProcessor(exporter, {}));
+provider.addSpanProcessor(new BatchSpanProcessor(exporter));
 
 provider.register();
 

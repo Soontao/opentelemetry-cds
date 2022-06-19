@@ -1,18 +1,27 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import api, { SpanOptions, SpanStatusCode } from "@opentelemetry/api";
+import api, { Context, SpanOptions, SpanStatusCode } from "@opentelemetry/api";
 import { InstrumentationBase } from "@opentelemetry/instrumentation";
 
 export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase {
 
-  private getCurrentContext() {
-    return api.trace.getSpan(api.context.active()) ?? this.tracer.startSpan("Unknown");
+  private getCurrentSpan() {
+    return api.trace.getSpan(api.context.active());
   }
 
-  private createNewContext() {
-    return api.trace.setSpan(
-      api.context.active(),
-      this.getCurrentContext()
-    );
+  /**
+   * create a new context from current span, if no current span, use root context
+   * 
+   * @returns 
+   */
+  private createNewContext(): Context {
+    const currentSpan = this.getCurrentSpan();
+    if (currentSpan !== undefined) {
+      return api.trace.setSpan(
+        api.context.active(),
+        currentSpan
+      );
+    }
+    return (api as any).ROOT_CONTEXT;
   }
 
   /**

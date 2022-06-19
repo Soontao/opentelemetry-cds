@@ -22,6 +22,13 @@ export class CDSCompilerServiceInstrumentation extends CDSBaseServiceInstrumenta
       ["2.*"],
       (moduleExport) => {
         this._wrap(moduleExport, "edm", (original) => {
+          
+          this._wrap(original, "all", (originalAll) => {
+            return function edm(this: any) {
+              return originalAll.apply(this, arguments);
+            };
+          });
+          
           return function edm(this: any) {
             return original.apply(this, arguments);
           };
