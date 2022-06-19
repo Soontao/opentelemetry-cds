@@ -40,7 +40,7 @@ npm i -S opentelemetry-cds
 
 
 ```bash
-OTEL_EXPORTER_OTLP_ENDPOINT=https://localhost:4318
+OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 ```
 
 ## Screenshots
