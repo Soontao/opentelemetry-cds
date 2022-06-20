@@ -34,6 +34,8 @@ npm i -S opentelemetry-cds
   - [x] `createOdataService`
 - [x] CDS Compiler
   - [x] edm/edmx/edm.all/edmx.all
+- [ ] Messaging
+  - [ ] cds-nats
 - [x] third-party instrumentations
   - [x] express
   - [x] net
