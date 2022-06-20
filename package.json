@@ -47,6 +47,10 @@
   "optionalDependencies": {
     "fsevents": "^2.3.2"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Soontao/opentelemetry-cds"
+  },
   "keywords": [
     "cds",
     "CAP",
