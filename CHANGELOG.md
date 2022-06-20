@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.9](https://github.com/Soontao/opentelemetry-cds/compare/v0.0.8...v0.0.9) (2022-06-20)
+
+
+### Bug Fixes
+
+* ci ([8eb40c8](https://github.com/Soontao/opentelemetry-cds/commit/8eb40c808eab318c9ac5938cbfdb3b45c86f2610))
+
 ### [0.0.8](https://github.com/Soontao/opentelemetry-cds/compare/v0.0.7...v0.0.8) (2022-06-20)
 
 
