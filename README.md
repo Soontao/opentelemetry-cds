@@ -36,6 +36,10 @@ npm i -S opentelemetry-cds
   - [x] edm/edmx/edm.all/edmx.all
 - [ ] Messaging
   - [ ] cds-nats
+  - [ ] cds.MessagingService
+- [ ] Database
+  - [ ] sqlite3
+  - [ ] hdb
 - [x] third-party instrumentations
   - [x] express
   - [x] net
