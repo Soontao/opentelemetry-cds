@@ -1,7 +1,7 @@
 {
   "name": "opentelemetry-cds",
   "description": "opentelemetry support for CDS nodejs runtime",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "main": "lib/index.js",
   "engines": {
     "node": ">=14",
