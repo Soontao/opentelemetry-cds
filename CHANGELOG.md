@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.4](https://github.com/Soontao/opentelemetry-cds/compare/v0.0.3...v0.0.4) (2022-06-20)
+
+
+### Bug Fixes
+
+* ci npm publish ([0a1d6f0](https://github.com/Soontao/opentelemetry-cds/commit/0a1d6f06c57a63ef23e4123defbf05b1aef8a7ea))
+
 ### [0.0.3](https://github.com/Soontao/opentelemetry-cds/compare/v0.0.2...v0.0.3) (2022-06-20)
 
 ### 0.0.2 (2022-06-20)
