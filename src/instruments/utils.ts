@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /**
  * get a read able entity for query
  * 
@@ -8,9 +9,21 @@ export function getEntityNameFromQuery(query: any | Array<any>): string | undefi
   if (query instanceof Array) {
     return `[${query.map(getEntityNameFromQuery).filter(Boolean).join(", ")}]`;
   }
-  return query?.SELECT?.from?.ref?.[0] ??
-    query?.SELECT?.from?.args?.map?.((arg: any) => arg?.ref?.[0])?.join?.(" join ") ??
+
+  return selectQuery(query) ??
     query?.INSERT?.into ??
     query?.UPDATE?.entity ??
     query?.DELETE?.from;
+}
+
+
+/**
+ * get entity name from select query
+ * 
+ * @param query 
+ * @returns 
+ */
+function selectQuery(query: any): string | undefined {
+  return query?.SELECT?.from?.ref?.map?.((ref: string | any) => typeof ref === "string" ? ref : JSON.stringify(ref))?.join(", ") ??
+    query?.SELECT?.from?.args?.map?.((arg: any) => arg?.ref?.[0])?.join?.(" join ");
 }
