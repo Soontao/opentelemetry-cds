@@ -1,5 +1,6 @@
 # OpenTelemetry for CDS
 
+[![npm](https://img.shields.io/npm/v/opentelemetry-cds)](https://www.npmjs.com/package/opentelemetry-cds)
 ![GitHub top language](https://img.shields.io/github/languages/top/Soontao/opentelemetry-cds)
 [![node-test](https://github.com/Soontao/opentelemetry-cds/actions/workflows/nodejs.yml/badge.svg)](https://github.com/Soontao/opentelemetry-cds/actions/workflows/nodejs.yml)
 
@@ -59,6 +60,7 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 ## Screenshots
 
 > batch operations
+
 ![](https://res.cloudinary.com/drxgh9gqs/image/upload/q_51/v1655555236/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE_2022-06-18_202702_m9lrg6.png)
 
 > cross service call
