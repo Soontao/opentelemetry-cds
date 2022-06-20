@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-this-alias */
 /* eslint-disable prefer-rest-params */
 import {
@@ -6,7 +7,7 @@ import {
   InstrumentationNodeModuleDefinition,
   InstrumentationNodeModuleFile
 } from "@opentelemetry/instrumentation";
-import { DbSystemValues, SemanticAttributes } from "@opentelemetry/semantic-conventions";
+import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
 import { CDSSemanticAttributes } from "../attributes";
 import { version } from "../version.json";
 import { CDSBaseServiceInstrumentation } from "./CDSBaseInstrumentation";
@@ -61,22 +62,8 @@ export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
 
             if (name === "db") {
               // if is database service
-              attributes[SemanticAttributes.DB_OPERATION] = Object.keys(
-                req?.query ?? {}
-              )?.[0] ?? req?.method ?? "Unknown";
-              switch (kind) {
-                case "mysql":
-                  attributes[SemanticAttributes.DB_SYSTEM] = DbSystemValues.MYSQL;
-                  break;
-                case "hana":
-                  attributes[SemanticAttributes.DB_SYSTEM] = DbSystemValues.HANADB;
-                  break;
-                case "sqlite":
-                  attributes[SemanticAttributes.DB_SYSTEM] = DbSystemValues.SQLITE;
-                  break;
-                default:
-                  break;
-              }
+              attributes[SemanticAttributes.DB_OPERATION] = Object.keys(req?.query ?? {})?.[0] ?? req?.method ?? "Unknown";
+              attributes[SemanticAttributes.DB_SYSTEM] = kind;
             }
 
             const spanParts = [
