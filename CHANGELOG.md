@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.7](https://github.com/Soontao/opentelemetry-cds/compare/v0.0.6...v0.0.7) (2022-06-20)
+
+
+### Features
+
+* add mysql2 instrumentation ([4bf127b](https://github.com/Soontao/opentelemetry-cds/commit/4bf127b400e80754e7bcd5814b71f86356b30df2))
+
 ### [0.0.6](https://github.com/Soontao/opentelemetry-cds/compare/v0.0.5...v0.0.6) (2022-06-20)
 
 ### [0.0.5](https://github.com/Soontao/opentelemetry-cds/compare/v0.0.4...v0.0.5) (2022-06-20)
