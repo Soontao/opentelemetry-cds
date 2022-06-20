@@ -1,6 +1,7 @@
 
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { registerInstrumentations } from "@opentelemetry/instrumentation";
+import { DnsInstrumentation } from "@opentelemetry/instrumentation-dns";
 import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express";
 import { GenericPoolInstrumentation } from "@opentelemetry/instrumentation-generic-pool";
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
@@ -40,6 +41,7 @@ registerInstrumentations({
     new ODataAdapterInstrumentation(),
     new GenericPoolInstrumentation(),
     new NetInstrumentation(),
+    new DnsInstrumentation(),
   ],
 });
 
