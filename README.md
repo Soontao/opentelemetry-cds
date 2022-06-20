@@ -32,6 +32,12 @@ npm i -S opentelemetry-cds
   - [x] `createOdataService`
 - [x] CDS Compiler
   - [x] edm/edmx/edm.all/edmx.all
+- [x] third-party instrumentations
+  - [x] express
+  - [x] net
+  - [x] dns
+  - [x] mysql
+  - [x] http
 
 
 ## OTLP Endpoint

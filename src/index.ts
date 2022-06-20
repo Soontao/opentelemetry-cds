@@ -5,6 +5,7 @@ import { DnsInstrumentation } from "@opentelemetry/instrumentation-dns";
 import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express";
 import { GenericPoolInstrumentation } from "@opentelemetry/instrumentation-generic-pool";
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
+import { MySQL2Instrumentation } from "@opentelemetry/instrumentation-mysql2";
 import { NetInstrumentation } from "@opentelemetry/instrumentation-net";
 import { Resource } from "@opentelemetry/resources";
 import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base";
@@ -42,6 +43,7 @@ registerInstrumentations({
     new GenericPoolInstrumentation(),
     new NetInstrumentation(),
     new DnsInstrumentation(),
+    new MySQL2Instrumentation(),
   ],
 });
 
