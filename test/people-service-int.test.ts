@@ -1,14 +1,16 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
 import "../src";
-import { connect, db, run, test } from "@sap/cds";
 
 describe("People Service Int Test", () => {
+
+  const cds = require("@sap/cds");
 
   /**
    * @type {{axios:import("axios").AxiosInstance}}
    */
-  const { axios } = test(".").in(__dirname, "./app");
+  const { axios } = cds.test(".").in(__dirname, "./app");
 
   axios.defaults.validateStatus = () => true;
   // if you enabled the basic auth for local development
@@ -17,7 +19,7 @@ describe("People Service Int Test", () => {
   const testPeopleID = "318da8b4-95be-498d-bae7-f0c6ed6516ac";
 
   beforeAll(() => {
-    jest.spyOn(db, "run");
+    jest.spyOn(cds.db, "run");
   });
 
 
@@ -72,17 +74,17 @@ describe("People Service Int Test", () => {
     expect(response.status).toBe(204);
     // because setup the spy on the cds.db.run
     // so that, you can check the last call of the cds.db.run
-    expect(db.run.mock.lastCall).toMatchSnapshot();
+    expect(cds.db.run.mock.lastCall).toMatchSnapshot();
     // verify
     const deletedQuery = await axios.get(`/people/EarthPeoples(${testPeopleID})`);
     expect(deletedQuery.status).toBe(404);
-    const dbPeople = await run(SELECT.one.from("db.EarthPeople", testPeopleID));
+    const dbPeople = await cds.run(SELECT.one.from("db.EarthPeople", testPeopleID));
     expect(dbPeople).not.toBeNull();
   });
 
   it("should support cds API and validation", async () => {
     // you can use cds.xxx api here, and test framework directly
-    const peopleService = await connect.to("PeopleService");
+    const peopleService = await cds.connect.to("PeopleService");
     // you want to expect 'async' error
     await expect(async () => {
       await peopleService.run(INSERT.into("EarthPeoples").entries({
@@ -92,7 +94,7 @@ describe("People Service Int Test", () => {
   });
 
   it("should support raise error when delete without query filter", async () => {
-    const peopleService = await connect.to("PeopleService");
+    const peopleService = await cds.connect.to("PeopleService");
     await expect(() => peopleService.run(DELETE.from("EarthPeoples")))
       .rejects
       .toThrow("internal server error");
