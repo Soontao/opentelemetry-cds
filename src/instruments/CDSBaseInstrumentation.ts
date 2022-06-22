@@ -142,7 +142,7 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
           }
         }) as unknown as any;
     };
-    if (original.name !== undefined) {
+    if (original?.name !== undefined) {
       Object.defineProperty(redefined, "name", { value: original.name });
     }
     return redefined;
@@ -181,7 +181,7 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
           );
         }) as unknown as any;
     };
-    if (original.name !== undefined) {
+    if (original?.name !== undefined) {
       Object.defineProperty(redefined, "name", { value: original.name });
     }
     return redefined;
