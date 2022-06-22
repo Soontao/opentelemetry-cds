@@ -8,6 +8,7 @@ import {
   InstrumentationNodeModuleFile
 } from "@opentelemetry/instrumentation";
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
+import { CDSSemanticAttributes } from "../attributes";
 import { version } from "../version.json";
 import { CDSBaseServiceInstrumentation } from "./CDSBaseInstrumentation";
 
@@ -46,25 +47,20 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
        */
       (exportedModule) => {
         this._wrap(exportedModule.prototype, "execute", (original: any) => {
-          const inst = this;
-          return function execute(this: any) {
-            const plainHttpRequest = this?._request?.getIncomingRequest?.();
-            const spanParts = [
-              "batch.execute",
-              plainHttpRequest?.method,
-              plainHttpRequest?.url,
-            ].filter(Boolean);
-            return inst.runWithNewContext(
-              spanParts.join(" "),
-              () => original.apply(this, arguments),
-              {
-                attributes: {
-                  [SemanticAttributes.CODE_FILEPATH]: moduleName,
-                  [SemanticAttributes.CODE_FUNCTION]: "execute",
-                }
+          return this._createWrapForNormalFunction(
+            "batch.execute",
+            original,
+            {},
+            {
+              startExecutionHook: (span, thisValue) => {
+                const plainHttpRequest = thisValue?._request?.getIncomingRequest?.();
+                span.setAttributes({
+                  [SemanticAttributes.HTTP_URL]: decodeURIComponent(plainHttpRequest?.url ?? ""),
+                  [SemanticAttributes.HTTP_METHOD]: plainHttpRequest?.method,
+                });
               }
-            );
-          };
+            }
+          );
         });
         return exportedModule;
       },
@@ -84,7 +80,7 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
        * @param exportedModule 
        */
       (exportedModule) => {
-        this._simpleMeasure(exportedModule.prototype, moduleName, "process");
+        this._simpleMeasure(exportedModule.prototype, "BatchProcessor", "process");
         return exportedModule;
       },
       (exportedModule) => {
@@ -103,13 +99,16 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
        */
       (exportedModule) => {
         this._wrap(exportedModule, "createOdataService", (original: any) => {
-          const inst = this;
-          return function createOdataService(this: any) {
-            return inst.runWithNewContext(
-              `createOdataService for '${arguments?.[0]?.name}'`,
-              () => original.apply(this, arguments),
-            );
-          };
+          return this._createWrapForNormalFunction(
+            "createOdataService",
+            original,
+            {},
+            {
+              startExecutionHook: (span, _thisValue, args) => {
+                span.setAttribute(CDSSemanticAttributes.APP_SERVICE_NAME, args?.[0].name);
+              }
+            }
+          );
         });
         return exportedModule;
       },

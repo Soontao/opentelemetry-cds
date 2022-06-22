@@ -17,6 +17,7 @@ import process from "process";
 import { CDSCompilerServiceInstrumentation } from "./instruments/CDSCompilerInstrumentation";
 import { CDSServiceInstrumentation } from "./instruments/CDSServiceInstrumentation";
 import { ODataAdapterInstrumentation } from "./instruments/ODataAdapterInstrumentation";
+import { SqliteInstrumentation } from "./instruments/SqliteInstrumentation";
 
 const provider = new NodeTracerProvider({
   resource: new Resource({
@@ -44,6 +45,7 @@ registerInstrumentations({
     new NetInstrumentation(),
     new DnsInstrumentation(),
     new MySQL2Instrumentation(),
+    new SqliteInstrumentation(),
   ],
 });
 

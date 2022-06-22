@@ -42,43 +42,52 @@ export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
        */
       (exportedModule) => {
         this._wrap(exportedModule, "dispatch", (original: any) => {
-          const inst = this;
-          return function dispatch(this: any) {
-            const { name, kind } = this;
 
-            const req = arguments?.[0] ?? {};
-            const attributes = {
-              [SemanticAttributes.CODE_FILEPATH]: moduleName,
-              [SemanticAttributes.CODE_FUNCTION]: "dispatch",
-              [SemanticAttributes.ENDUSER_ID]: req?.user?.id,
-              [CDSSemanticAttributes.CDS_TENANT_ID]: req?.tenant,
-              [CDSSemanticAttributes.CDS_QUERY_ENTITY]: req?.target,
-              [CDSSemanticAttributes.CDS_REQUEST_ID]: req?.id,
-            };
+          return this._createWrapForNormalFunction(
+            "cds.Service.dispatch",
+            original,
+            {},
+            {
+              startExecutionHook: (span, thisValue, args) => {
+                const { name, kind } = thisValue;
 
-            if (kind === "app-service") {
-              attributes[CDSSemanticAttributes.APP_SERVICE_NAME] = name;
+                const req = args?.[0] ?? {};
+                const attributes = {
+                  [SemanticAttributes.CODE_FILEPATH]: moduleName,
+                  [SemanticAttributes.CODE_FUNCTION]: "dispatch",
+                  [SemanticAttributes.ENDUSER_ID]: req?.user?.id,
+                  [CDSSemanticAttributes.CDS_TENANT_ID]: req?.tenant,
+                  [CDSSemanticAttributes.CDS_REQUEST_TARGET]: req?.target,
+                  [CDSSemanticAttributes.CDS_REQUEST_EVENT]: req?.event,
+                  [CDSSemanticAttributes.CDS_REQUEST_ID]: req?.id,
+                  [CDSSemanticAttributes.CDS_SERVICE_KIND]: kind,
+                  [CDSSemanticAttributes.CDS_SERVICE_NAME]: name,
+                  [CDSSemanticAttributes.CDS_QUERY_ENTITIES]: getEntityNameFromQuery(req?.query),
+                };
+
+                if (kind === "app-service") {
+                  attributes[CDSSemanticAttributes.APP_SERVICE_NAME] = name;
+                }
+
+                if (name === "db") {
+                  // if is database service
+                  attributes[SemanticAttributes.DB_OPERATION] = Object.keys(req?.query ?? {})?.[0] ?? req?.method ?? "Unknown";
+                  attributes[SemanticAttributes.DB_SYSTEM] = kind;
+                }
+
+                span.setAttributes(attributes);
+
+                const spanParts = [
+                  kind,
+                  name,
+                  req?.event ?? (req?.query instanceof Array ? "MULTI OPERATION" : Object.keys(req?.query ?? {})?.[0]),
+                  req?.target?.name ?? getEntityNameFromQuery(req?.query),
+                ].filter(Boolean);
+
+                span.updateName(spanParts.join(" "));
+              }
             }
-
-            if (name === "db") {
-              // if is database service
-              attributes[SemanticAttributes.DB_OPERATION] = Object.keys(req?.query ?? {})?.[0] ?? req?.method ?? "Unknown";
-              attributes[SemanticAttributes.DB_SYSTEM] = kind;
-            }
-
-            const spanParts = [
-              kind,
-              name,
-              req?.event ?? (req?.query instanceof Array ? "MULTI OPERATION" : Object.keys(req?.query ?? {})?.[0]),
-              req?.target?.name ?? getEntityNameFromQuery(req?.query),
-            ].filter(Boolean);
-
-            return inst.runWithNewContext(
-              spanParts.join(" "),
-              () => original.apply(this, arguments),
-              { attributes }
-            );
-          };
+          );
         });
         return exportedModule;
       },

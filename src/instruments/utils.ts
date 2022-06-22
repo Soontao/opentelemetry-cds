@@ -24,6 +24,6 @@ export function getEntityNameFromQuery(query: any | Array<any>): string | undefi
  * @returns 
  */
 function selectQuery(query: any): string | undefined {
-  return query?.SELECT?.from?.ref?.map?.((ref: string | any) => typeof ref === "string" ? ref : JSON.stringify(ref))?.join(", ") ??
+  return query?.SELECT?.from?.ref?.map?.((ref: string | any) => typeof ref === "string" ? ref : ref?.id ?? JSON.stringify(ref))?.join(", ") ??
     query?.SELECT?.from?.args?.map?.((arg: any) => arg?.ref?.[0])?.join?.(" join ");
 }

@@ -2,11 +2,18 @@
 /* eslint-disable prefer-rest-params */
 /* eslint-disable @typescript-eslint/no-this-alias */
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import api, { Context, SpanOptions, SpanStatusCode } from "@opentelemetry/api";
+import api, { Context, Span, SpanOptions, SpanStatusCode } from "@opentelemetry/api";
 import { InstrumentationBase, InstrumentationNodeModuleFile } from "@opentelemetry/instrumentation";
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
 
 export type SpanNameHook = (thisValue: any, args: IArguments) => string;
+export type Done = (this: any, error?: any) => void;
+export type StartExecutionHook = (span: Span, thisValue: any, args: IArguments) => void;
+
+export interface Hooks {
+  startExecutionHook?: StartExecutionHook;
+}
+
 export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase {
 
   private getCurrentSpan() {
@@ -47,23 +54,21 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
    * @param moduleName 
    * @param functionName 
    */
-  protected _simpleMeasure(moduleExport: any, moduleName: string, functionName: string, spanNameHook?: SpanNameHook) {
+  protected _simpleMeasure(moduleExport: any, moduleName: string, functionName: string, hooks?: Hooks) {
+
     this._wrap(moduleExport, functionName, (original) => {
-      const inst = this;
-      const redefined = function (this: any) {
-        return inst.runWithNewContext(
-          spanNameHook?.(this, arguments) ?? `${moduleName}.${functionName}`,
-          () => original.apply(this, arguments),
-          {
-            attributes: {
-              [SemanticAttributes.CODE_FILEPATH]: moduleName,
-              [SemanticAttributes.CODE_FUNCTION]: functionName,
-            }
+      const spanName = `${moduleName}.${functionName}`;
+      return this._createWrapForNormalFunction(
+        spanName,
+        original,
+        {
+          attributes: {
+            [SemanticAttributes.CODE_FILEPATH]: moduleName,
+            [SemanticAttributes.CODE_FUNCTION]: functionName,
           }
-        );
-      };
-      Object.defineProperty(redefined, "name", { value: functionName });
-      return redefined;
+        },
+        hooks
+      );
     });
   }
 
@@ -98,42 +103,89 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
     );
   }
 
+  protected _createWrapForNormalFunction(
+    spanName: string,
+    original: (...args: Array<any>) => void,
+    options?: SpanOptions,
+    hooks?: Hooks,
+  ) {
+    const inst = this;
+    const redefined = function (this: any) {
+      const newSpan = inst.createSubSpan(spanName, options);
+      return api.context.with(
+        api.trace.setSpan(api.context.active(), newSpan),
+        () => {
+          hooks?.startExecutionHook?.(newSpan, this, arguments);
+          let r: any;
+          try {
+            r = original.apply(this, arguments as any);
+          }
+          catch (error) {
+            newSpan.recordException(error);
+            newSpan.setStatus({ code: SpanStatusCode.ERROR });
+            newSpan.end();
+            throw error;
+          }
 
-  protected runWithNewContext<T = any>(
-    newSpanName: string,
-    fn: (...args: Array<any>) => T,
-    options?: SpanOptions
-  ): T {
-    const newSpan = this.createSubSpan(newSpanName, options);
-    return api.context.with(
-      api.trace.setSpan(api.context.active(), newSpan),
-      () => {
-        let r: any;
+          if (r instanceof Promise) {
+            return r
+              .catch(error => {
+                newSpan.recordException(error);
+                newSpan.setStatus({ code: SpanStatusCode.ERROR });
+                throw error;
+              })
+              .finally(() => newSpan.end());
+          }
+          else {
+            newSpan.end();
+            return r;
+          }
+        }) as unknown as any;
+    };
+    if (original.name !== undefined) {
+      Object.defineProperty(redefined, "name", { value: original.name });
+    }
+    return redefined;
+  }
 
-        try {
-          r = fn();
-        }
-        catch (error) {
-          newSpan.recordException(error);
-          newSpan.setStatus({ code: SpanStatusCode.ERROR });
-          newSpan.end();
-          throw error;
-        }
-
-        if (r instanceof Promise) {
-          return r
-            .catch(error => {
+  protected _createWrapForCbFunction(
+    spanName: string,
+    original: (...args: Array<any>) => void,
+    options?: SpanOptions,
+    hooks?: Hooks,
+  ) {
+    const inst = this;
+    const redefined = function (this: any) {
+      const newSpan = inst.createSubSpan(spanName, options);
+      return api.context.with(
+        api.trace.setSpan(api.context.active(), newSpan),
+        () => {
+          hooks?.startExecutionHook?.(newSpan, this, arguments);
+          function done(error?: any) {
+            if (error) {
               newSpan.recordException(error);
               newSpan.setStatus({ code: SpanStatusCode.ERROR });
-              throw error;
-            })
-            .finally(() => newSpan.end());
-        }
-        else {
-          newSpan.end();
-          return r;
-        }
+            }
+            newSpan.end();
+          }
+          const cb = arguments?.[arguments.length - 1];
+          return original.apply(
+            this,
+            Array
+              .from(arguments)
+              .slice(0, arguments.length - 1)
+              .concat(function wrapCb(this: any) {
+                done?.apply(this, arguments as any);
+                cb?.apply(this, arguments);
+              })
+          );
+        }) as unknown as any;
+    };
+    if (original.name !== undefined) {
+      Object.defineProperty(redefined, "name", { value: original.name });
+    }
+    return redefined;
 
-      }) as unknown as any;
   }
+
 }
