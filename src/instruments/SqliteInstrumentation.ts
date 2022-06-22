@@ -7,7 +7,7 @@ import {
   InstrumentationModuleDefinition,
   InstrumentationNodeModuleDefinition
 } from "@opentelemetry/instrumentation";
-import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
+import { DbSystemValues, SemanticAttributes } from "@opentelemetry/semantic-conventions";
 import { version } from "../version.json";
 import { CDSBaseServiceInstrumentation } from "./CDSBaseInstrumentation";
 
@@ -26,7 +26,10 @@ export class SqliteInstrumentation extends CDSBaseServiceInstrumentation {
         `${className}.${functionName}`,
         original,
         {
-          kind: SpanKind.INTERNAL
+          kind: SpanKind.CLIENT,
+          attributes: {
+            [SemanticAttributes.DB_SYSTEM]: DbSystemValues.SQLITE,
+          }
         },
         {
           startExecutionHook: (span, _thisValue, args) => {
