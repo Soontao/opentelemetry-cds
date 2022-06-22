@@ -8,6 +8,8 @@
     "npm": ">=7"
   },
   "scripts": {
+    "pretest": "bash install_no_trace_deps.sh",
+    "prelint": "bash install_no_trace_deps.sh",
     "test": "jest --detectOpenHandles --passWithNoTests",
     "prebuild": "rimraf lib",
     "build": "tsc",

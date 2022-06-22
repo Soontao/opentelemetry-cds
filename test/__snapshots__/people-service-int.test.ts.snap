@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`People Service Int Test should support snapshot test 1`] = `
+Object {
+  "@odata.context": "$metadata#EarthPeoples/$entity",
+  "Address": null,
+  "Age": 18,
+  "ID": "18f3dfbf-92e2-4e50-a14d-ca120fb3aff5",
+  "Name": "Theo for Snapshot",
+  "Weight": null,
+}
+`;
+
+exports[`People Service Int Test should support soft delete for EarthPeople 1`] = `
+Array [
+  UPDATE {
+    "UPDATE": Object {
+      "data": Object {
+        "Deleted": true,
+        "ID": "318da8b4-95be-498d-bae7-f0c6ed6516ac",
+      },
+      "entity": "db.EarthPeople",
+      "where": Array [
+        Object {
+          "ref": Array [
+            "ID",
+          ],
+        },
+        "=",
+        Object {
+          "val": "318da8b4-95be-498d-bae7-f0c6ed6516ac",
+        },
+      ],
+    },
+  },
+]
+`;
