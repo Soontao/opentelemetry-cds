@@ -1,0 +1,15 @@
+{
+  "name": "test-project",
+  "scripts": {
+    "start": "cds run",
+    "test": "jest",
+    "coverage": "npm run test -- --coverage"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "sql"
+      }
+    }
+  }
+}
