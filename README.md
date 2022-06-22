@@ -27,7 +27,7 @@ npm i -S opentelemetry-cds
 ## Instruments
 
 - [x] Service-dispatch
-- [ ] EventHandlers
+- [x] EventHandlers
 - [x] OData Adapter
   - [x] `process`
   - [x] `execute`
@@ -49,7 +49,7 @@ npm i -S opentelemetry-cds
 
 ## Features
 
-- [ ] instruments
+- [x] instrumentations
 - [ ] cloud foundry support
 - [ ] k8s support
 - [ ] environment variables
