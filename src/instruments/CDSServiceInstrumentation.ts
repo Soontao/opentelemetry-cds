@@ -69,7 +69,7 @@ export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
             const spanParts = [
               kind,
               name,
-              req?.event ?? Object.keys(req?.query ?? {})?.[0],
+              req?.event ?? (req?.query instanceof Array ? "MULTI OPERATION" : Object.keys(req?.query ?? {})?.[0]),
               req?.target?.name ?? getEntityNameFromQuery(req?.query),
             ].filter(Boolean);
 
