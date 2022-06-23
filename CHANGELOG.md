@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.12](https://github.com/Soontao/opentelemetry-cds/compare/v0.0.11...v0.0.12) (2022-06-23)
+
+
+### Features
+
+* partial support nats with bug ([0fdee59](https://github.com/Soontao/opentelemetry-cds/commit/0fdee592305a81a8560dc6d7bfdd43654e7b8cbc))
+* support nats ([3620acc](https://github.com/Soontao/opentelemetry-cds/commit/3620acc5d0e87f8fe178379a871d1b100d2c0c72))
+
+
+### Bug Fixes
+
+* lint ([3121ccb](https://github.com/Soontao/opentelemetry-cds/commit/3121ccb3baaf4aa396ef99f7fa57cbf112ae766e))
+* wrong op ([e42a3d0](https://github.com/Soontao/opentelemetry-cds/commit/e42a3d008bb5c7880fdc25daee01c975288e50e4))
+
 ### [0.0.11](https://github.com/Soontao/opentelemetry-cds/compare/v0.0.10...v0.0.11) (2022-06-23)
 
 
