@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.11](https://github.com/Soontao/opentelemetry-cds/compare/v0.0.10...v0.0.11) (2022-06-23)
+
+
+### Features
+
+* basic test case ([e934644](https://github.com/Soontao/opentelemetry-cds/commit/e9346441833a94bd76cc76e9fbfc8e37dc875a9f))
+* otlp bin ([5693574](https://github.com/Soontao/opentelemetry-cds/commit/5693574c393354ec27e69cfc73cb0c3602d65ffb))
+
 ### [0.0.10](https://github.com/Soontao/opentelemetry-cds/compare/v0.0.9...v0.0.10) (2022-06-22)
 
 
