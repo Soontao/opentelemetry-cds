@@ -11,13 +11,13 @@ import { CDSBaseServiceInstrumentation } from "./CDSBaseInstrumentation";
 
 const NatsHeadersAccessor = {
   set(carrier: any, key: string, value: string) {
-    carrier.set(key, value);
+    carrier?.set?.(key, value);
   },
   keys(carrier: any): any {
-    return carrier.keys()
+    return carrier?.keys?.();
   },
   get(carrier: any, key: string): any {
-    return carrier.get(key)
+    return carrier?.get?.(key);
   }
 };
 
@@ -32,15 +32,16 @@ export class CDSNatsInstrumentation extends CDSBaseServiceInstrumentation {
       "cds-nats",
       ["2.*"],
       moduleExport => {
-        const inst = this
+        const inst = this;
         this._wrap(moduleExport.prototype, "_publish", (original: any) => {
           return inst._createWrapForNormalFunction("nats - message out", original, { kind: SpanKind.CLIENT }, {
             startExecutionHook(span, thisValue, args) {
-              const headers = args?.[2] ?? require("nats")?.headers?.();
-              propagation.inject(api.context.active(), headers, NatsHeadersAccessor,
-              );
+              const headers = args?.[2];
+              if (headers !== undefined) {
+                propagation.inject(api.context.active(), headers, NatsHeadersAccessor);
+              }
             }
-          })
+          });
 
 
         });
@@ -52,14 +53,14 @@ export class CDSNatsInstrumentation extends CDSBaseServiceInstrumentation {
                 ROOT_CONTEXT,
                 msg.headers,
                 NatsHeadersAccessor
-              )
+              );
               const newSpan = inst.tracer.startSpan(
                 "nats - message in",
                 {
                   kind: SpanKind.SERVER,
                 },
                 newContext
-              )
+              );
               return api.context.with(
                 api.trace.setSpan(newContext, newSpan),
                 () => original
@@ -67,16 +68,16 @@ export class CDSNatsInstrumentation extends CDSBaseServiceInstrumentation {
                   .catch((error: any) => {
                     newSpan.recordException(error);
                     newSpan.setStatus({ code: SpanStatusCode.ERROR });
-                    throw error
+                    throw error;
                   })
                   .finally(() => newSpan.end())
-              )
+              );
             }
 
             return original.apply(this, arguments);
           };
         });
-        return moduleExport
+        return moduleExport;
       },
       moduleExport => {
         this._unwrap(moduleExport.prototype, "_publish");
