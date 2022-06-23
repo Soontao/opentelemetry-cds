@@ -36,6 +36,7 @@ npm i -S opentelemetry-cds
   - [x] edm/edmx/edm.all/edmx.all
 - [ ] Messaging
   - [x] cds-nats
+    - [ ] rfc
   - [ ] cds.MessagingService
 - [x] Database
   - [x] sqlite3 (`Database`.`run`/`prepare`/`all`/`get`)
@@ -73,6 +74,10 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 > cross service call
 
 ![](https://res.cloudinary.com/drxgh9gqs/image/upload/q_47/v1655704522/2022-06-20_13-16-24_zbewp6.png)
+
+> async message broker
+
+![](https://res.cloudinary.com/drxgh9gqs/image/upload/c_scale,h_1570,q_52/v1655986204/2022-06-23_20-09-16_dzvmxb.png)
 
 ## [CHANGELOG](./CHANGELOG.md)
 
