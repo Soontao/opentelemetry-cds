@@ -18,12 +18,31 @@ export interface DatabaseInstrumentationConfig extends InstrumentationConfig {
 
 export abstract class DatabaseInstrumentation extends CDSBaseServiceInstrumentation {
 
-
-  _config: DatabaseInstrumentationConfig;
+  protected _config: DatabaseInstrumentationConfig;
 
   constructor(name: string, options: DatabaseInstrumentationConfig) {
     super(name, version, options);
     this._config = options;
+  }
+
+  protected init(): InstrumentationModuleDefinition<any> {
+    const module = new InstrumentationNodeModuleDefinition<any>(
+      this._config.packageName,
+      this._config.version,
+      (moduleExport) => {
+        for (const functionName of this._config.functions) {
+          this._measureDatabaseFunction(this._config?.classExporter?.(moduleExport), functionName);
+        }
+        return moduleExport;
+      },
+      (moduleExport) => {
+        for (const functionName of this._config.functions) {
+          this._unwrap(this._config?.classExporter?.(moduleExport).prototype, functionName);
+        }
+      }
+    );
+
+    return module;
   }
 
   protected _measureDatabaseFunction(classObject: any, functionName: string) {
@@ -49,25 +68,6 @@ export abstract class DatabaseInstrumentation extends CDSBaseServiceInstrumentat
     });
   }
 
-  protected init(): InstrumentationModuleDefinition<any> {
-    const module = new InstrumentationNodeModuleDefinition<any>(
-      this._config.packageName,
-      this._config.version,
-      (moduleExport) => {
-        for (const functionName of this._config.functions) {
-          this._measureDatabaseFunction(this._config?.classExporter?.(moduleExport), functionName);
-        }
-        return moduleExport;
-      },
-      (moduleExport) => {
-        for (const functionName of this._config.functions) {
-          this._unwrap(this._config?.classExporter?.(moduleExport).prototype, functionName);
-        }
-      }
-    );
-
-    return module;
-  }
 
 
 }
