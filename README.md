@@ -37,9 +37,9 @@ npm i -S opentelemetry-cds
 - [ ] Messaging
   - [ ] cds-nats
   - [ ] cds.MessagingService
-- [ ] Database
+- [x] Database
   - [x] sqlite3 (`Database`.`run`/`prepare`/`all`/`get`)
-  - [x] hdb `Client`.`exec`/`prepare`
+  - [x] hdb `Client`.`exec`/`prepare`/`commit`/`rollback`
 - [x] third-party instrumentations
   - [x] express
   - [x] net
