@@ -126,13 +126,9 @@ export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
                   kind,
                   name,
                   "-",
-                  req?.event,
+                  req?.event ?? req?.query instanceof Array ? "MULTI OPERATION" : undefined,
                   req?.target?.name ?? getEntityNameFromQuery(req?.query),
                 ];
-
-                if (req?.query instanceof Array) {
-                  spanParts.push("MULTI OPERATION");
-                }
 
                 span.updateName(spanParts.filter(Boolean).join(" "));
 
@@ -149,6 +145,9 @@ export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
   }
 
   protected _extractAttributesFromReq(req: any) {
+    if (typeof req !== "object") {
+      return {};
+    }
     return {
       [SemanticAttributes.ENDUSER_ID]: req?.user?.id,
       [CDSSemanticAttributes.CDS_TENANT_ID]: req?.tenant,

@@ -11,6 +11,9 @@ export type Done = (this: any, error?: any) => void;
 export type StartExecutionHook = (span: Span, thisValue: any, args: IArguments) => void;
 
 export interface Hooks {
+  /**
+   * hook which invocated before the original function is invoked
+   */
   startExecutionHook?: StartExecutionHook;
 }
 
