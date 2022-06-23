@@ -126,7 +126,7 @@ export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
                   kind,
                   name,
                   "-",
-                  req?.event ?? req?.query instanceof Array ? "MULTI OPERATION" : undefined,
+                  req?.event ?? (req?.query instanceof Array ? "MULTI OPERATION" : undefined),
                   req?.target?.name ?? getEntityNameFromQuery(req?.query),
                 ];
 
