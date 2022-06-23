@@ -2,7 +2,7 @@
 /* eslint-disable prefer-rest-params */
 /* eslint-disable @typescript-eslint/no-this-alias */
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import api, { Context, Span, SpanOptions, SpanStatusCode } from "@opentelemetry/api";
+import api, { Context, Span, SpanOptions, SpanStatusCode, ROOT_CONTEXT } from "@opentelemetry/api";
 import { InstrumentationBase, InstrumentationNodeModuleFile } from "@opentelemetry/instrumentation";
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
 
@@ -28,7 +28,7 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
    * 
    * @returns 
    */
-  private createNewContext(): Context {
+  protected createNewContext(): Context {
     const currentSpan = this.getCurrentSpan();
     if (currentSpan !== undefined) {
       return api.trace.setSpan(
@@ -36,7 +36,7 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
         currentSpan
       );
     }
-    return (api as any).ROOT_CONTEXT;
+    return ROOT_CONTEXT;
   }
 
   /**
@@ -46,7 +46,7 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
    * @param options
    * @returns
    */
-  private createSubSpan(newSpanName: string, options?: SpanOptions) {
+  protected createSubSpan(newSpanName: string, options?: SpanOptions) {
     return this.tracer.startSpan(newSpanName, options, this.createNewContext());
   }
 
