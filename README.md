@@ -55,7 +55,7 @@ npm i -S opentelemetry-cds
 - [ ] environment variables
 - [x] `otlp-cds` command
 
-## OTLP Endpoint
+## Configuration
 
 > opentelemetry-cds is using `opentelemetry-http` protocol as exporter, just ref [@opentelemetry/exporter-trace-otlp-http](https://www.npmjs.com/package/@opentelemetry/exporter-trace-otlp-http) document to configure it by environment 
 
