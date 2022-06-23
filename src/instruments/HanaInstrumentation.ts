@@ -4,18 +4,17 @@
 import { InstrumentationConfig } from "@opentelemetry/instrumentation";
 import { DatabaseInstrumentation } from "./DatabaseInstrumentation";
 
-
-export class SqliteInstrumentation extends DatabaseInstrumentation {
+export class HanaInstrumentation extends DatabaseInstrumentation {
 
   constructor(options: InstrumentationConfig = {}) {
     super(
-      "SqliteInstrumentation",
+      "HanaInstrumentation",
       {
         ...options,
-        packageName: "sqlite3",
-        version: ["5.*"],
-        classExporter: (moduleExport) => moduleExport.Database,
-        functions: ["get", "all", "run", "prepare"]
+        packageName: "hdb",
+        version: ["0.*"],
+        classExporter: (moduleExport) => moduleExport.Client,
+        functions: ["exec", "prepare", "commit", "rollback"]
       }
     );
   }

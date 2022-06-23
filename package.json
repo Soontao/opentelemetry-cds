@@ -3,6 +3,9 @@
   "description": "opentelemetry support for CDS nodejs runtime",
   "version": "0.0.10",
   "main": "lib/index.js",
+  "bin": {
+    "otlp-cds": "./bin/otlp-cds.js"
+  },
   "engines": {
     "node": ">=14",
     "npm": ">=7"

@@ -19,7 +19,7 @@ npm i -S opentelemetry-cds
 ```json
 {
   "scripts": {
-    "start": "node -r opentelemetry-cds ./node_modules/.bin/cds run"
+    "start": "otlp-cds run"
   }
 }
 ```
@@ -53,6 +53,7 @@ npm i -S opentelemetry-cds
 - [ ] cloud foundry support
 - [ ] k8s support
 - [ ] environment variables
+- [x] `otlp-cds` command
 
 ## OTLP Endpoint
 

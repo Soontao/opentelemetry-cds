@@ -103,6 +103,13 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
     );
   }
 
+  private _executeHooks(span: Span, thisValue: any, args: IArguments, hooks?: Hooks) {
+    if (hooks === undefined) {
+      return;
+    }
+    hooks?.startExecutionHook?.(span, thisValue, args);
+  }
+
   protected _createWrapForNormalFunction(
     spanName: string,
     original: (...args: Array<any>) => void,
@@ -115,7 +122,7 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
       return api.context.with(
         api.trace.setSpan(api.context.active(), newSpan),
         () => {
-          hooks?.startExecutionHook?.(newSpan, this, arguments);
+          inst._executeHooks(newSpan, this, arguments, hooks);
           let r: any;
           try {
             r = original.apply(this, arguments as any);
@@ -160,7 +167,7 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
       return api.context.with(
         api.trace.setSpan(api.context.active(), newSpan),
         () => {
-          hooks?.startExecutionHook?.(newSpan, this, arguments);
+          inst._executeHooks(newSpan, this, arguments, hooks);
           function done(error?: any) {
             if (error) {
               newSpan.recordException(error);
@@ -169,16 +176,19 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
             newSpan.end();
           }
           const cb = arguments?.[arguments.length - 1];
-          return original.apply(
-            this,
-            Array
-              .from(arguments)
-              .slice(0, arguments.length - 1)
-              .concat(function wrapCb(this: any) {
-                done?.apply(this, arguments as any);
-                cb?.apply(this, arguments);
-              })
-          );
+          if (typeof cb === "function") {
+            return original.apply(
+              this,
+              Array
+                .from(arguments)
+                .slice(0, arguments.length - 1)
+                .concat(function wrapCb(this: any) {
+                  done?.apply(this, arguments as any);
+                  cb?.apply(this, arguments);
+                })
+            );
+          }
+          return original.apply(this, arguments as any);
         }) as unknown as any;
     };
     if (original?.name !== undefined) {

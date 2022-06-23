@@ -9,6 +9,9 @@ export function getEntityNameFromQuery(query: any | Array<any>): string | undefi
   if (query instanceof Array) {
     return `[${query.map(getEntityNameFromQuery).filter(Boolean).join(", ")}]`;
   }
+  if (typeof query === "string") {
+    return query;
+  }
 
   return selectQuery(query) ??
     query?.INSERT?.into ??

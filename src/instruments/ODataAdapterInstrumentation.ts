@@ -48,16 +48,18 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
       (exportedModule) => {
         this._wrap(exportedModule.prototype, "execute", (original: any) => {
           return this._createWrapForNormalFunction(
-            "batch.execute",
+            "batch.execute - single batch request",
             original,
             {},
             {
               startExecutionHook: (span, thisValue) => {
                 const plainHttpRequest = thisValue?._request?.getIncomingRequest?.();
-                span.setAttributes({
-                  [SemanticAttributes.HTTP_URL]: decodeURIComponent(plainHttpRequest?.url ?? ""),
-                  [SemanticAttributes.HTTP_METHOD]: plainHttpRequest?.method,
-                });
+                if (plainHttpRequest !== undefined) {
+                  span.setAttributes({
+                    [SemanticAttributes.HTTP_URL]: decodeURIComponent(plainHttpRequest?.url ?? ""),
+                    [SemanticAttributes.HTTP_METHOD]: plainHttpRequest?.method,
+                  });
+                }
               }
             }
           );

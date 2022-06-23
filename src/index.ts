@@ -16,6 +16,7 @@ import path from "path";
 import process from "process";
 import { CDSCompilerServiceInstrumentation } from "./instruments/CDSCompilerInstrumentation";
 import { CDSServiceInstrumentation } from "./instruments/CDSServiceInstrumentation";
+import { HanaInstrumentation } from "./instruments/HanaInstrumentation";
 import { ODataAdapterInstrumentation } from "./instruments/ODataAdapterInstrumentation";
 import { SqliteInstrumentation } from "./instruments/SqliteInstrumentation";
 
@@ -46,6 +47,7 @@ registerInstrumentations({
     new DnsInstrumentation(),
     new MySQL2Instrumentation(),
     new SqliteInstrumentation(),
+    new HanaInstrumentation(),
   ],
 });
 
