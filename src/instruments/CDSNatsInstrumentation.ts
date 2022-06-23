@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 /* eslint-disable prefer-rest-params */
-import api, { context, propagation, ROOT_CONTEXT, SpanKind } from "@opentelemetry/api";
+import api, { propagation, ROOT_CONTEXT, SpanKind, SpanStatusCode } from "@opentelemetry/api";
 import {
   InstrumentationConfig,
   InstrumentationModuleDefinition,
   InstrumentationNodeModuleDefinition
 } from "@opentelemetry/instrumentation";
-import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
 import { version } from "../version.json";
 import { CDSBaseServiceInstrumentation } from "./CDSBaseInstrumentation";
 
@@ -35,19 +34,14 @@ export class CDSNatsInstrumentation extends CDSBaseServiceInstrumentation {
       moduleExport => {
         const inst = this
         this._wrap(moduleExport.prototype, "_publish", (original: any) => {
+          return inst._createWrapForNormalFunction("nats - message out", original, { kind: SpanKind.CLIENT }, {
+            startExecutionHook(span, thisValue, args) {
+              const headers = args?.[2] ?? require("nats")?.headers?.();
+              propagation.inject(api.context.active(), headers, NatsHeadersAccessor,
+              );
+            }
+          })
 
-          return function _publish(this: any) {
-            const headers = arguments?.[2] ?? require("nats")?.headers?.();
-            const span = inst.tracer.startSpan("nats - message out")
-            const parentContext = api.context.active();
-            const messageContext = api.trace.setSpan(parentContext, span);
-            propagation.inject(
-              messageContext,
-              headers,
-              NatsHeadersAccessor,
-            );
-            return api.context.with(messageContext, () => original.apply(this, arguments))
-          }
 
         });
         this._wrap(moduleExport.prototype, "_handleInboundMessage", (original: any) => {
@@ -68,7 +62,14 @@ export class CDSNatsInstrumentation extends CDSBaseServiceInstrumentation {
               )
               return api.context.with(
                 api.trace.setSpan(newContext, newSpan),
-                () => original.apply(this, arguments)
+                () => original
+                  .apply(this, arguments)
+                  .catch((error: any) => {
+                    newSpan.recordException(error);
+                    newSpan.setStatus({ code: SpanStatusCode.ERROR });
+                    throw error
+                  })
+                  .finally(() => newSpan.end())
               )
             }
 

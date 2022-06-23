@@ -35,7 +35,7 @@ npm i -S opentelemetry-cds
 - [x] CDS Compiler
   - [x] edm/edmx/edm.all/edmx.all
 - [ ] Messaging
-  - [ ] cds-nats
+  - [x] cds-nats
   - [ ] cds.MessagingService
 - [x] Database
   - [x] sqlite3 (`Database`.`run`/`prepare`/`all`/`get`)
