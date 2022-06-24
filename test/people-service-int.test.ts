@@ -2,25 +2,18 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
 
+
 describe("People Service Int Test", () => {
+
   require("../src");
   const cds = require("@sap/cds");
-
-  /**
-   * @type {{axios:import("axios").AxiosInstance}}
-   */
   const { axios } = cds.test(".").in(__dirname, "./app");
-
   axios.defaults.validateStatus = () => true;
-  // if you enabled the basic auth for local development
-  // axios.defaults.auth = { username: "user", password: 'pass' }
-
   const testPeopleID = "318da8b4-95be-498d-bae7-f0c6ed6516ac";
 
-  beforeAll(() => {
+  beforeAll(async () => {
     jest.spyOn(cds.db, "run");
   });
-
 
   it("should support read metadata", async () => {
     const response = await axios.get("/people/$metadata");
