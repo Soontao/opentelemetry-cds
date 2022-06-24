@@ -55,5 +55,5 @@ registerInstrumentations({
 
 
 ["SIGINT", "SIGTERM"].forEach(signal => {
-  process.on(signal, () => provider.shutdown().catch(console.error));
+  process.on(signal, () => provider.shutdown().catch(console.error).finally(() => process.exit(0)));
 });

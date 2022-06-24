@@ -10,6 +10,8 @@ export type SpanNameHook = (thisValue: any, args: IArguments) => string;
 export type Done = (this: any, error?: any) => void;
 export type StartExecutionHook = (span: Span, thisValue: any, args: IArguments) => void;
 
+export type ModuleTransform = (moduleExport: any) => any;
+
 export interface Hooks {
   /**
    * hook which invocated before the original function is invoked
@@ -75,32 +77,29 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
     });
   }
 
-  protected _createSimplePatchFile(moduleName: string, functions: Array<string>): InstrumentationNodeModuleFile<any>;
+  protected _createSimplePatchFile(
+    moduleName: string,
+    functions: Array<string>,
+    moduleTransform?: ModuleTransform
+  ): InstrumentationNodeModuleFile<any>;
 
-  protected _createSimplePatchFile(moduleName: string, functions: { [key: string]: SpanNameHook }): InstrumentationNodeModuleFile<any>;
-
-  protected _createSimplePatchFile(moduleName: string, functions: any) {
+  protected _createSimplePatchFile(
+    moduleName: string,
+    functions: any,
+    moduleTransform: ModuleTransform = v => v
+  ): InstrumentationNodeModuleFile<any> {
     return new InstrumentationNodeModuleFile<any>(
       moduleName,
       ["*"],
       moduleExport => {
-        if (functions instanceof Array) {
-          for (const functionName of functions) {
-            this._simpleMeasure(moduleExport, moduleName, functionName);
-          }
+        for (const functionName of functions) {
+          this._simpleMeasure(moduleTransform(moduleExport), moduleName, functionName);
         }
-        else {
-          for (const [functionName, spanNameHook] of Object.entries(functions)) {
-            this._simpleMeasure(moduleExport, moduleName, functionName, spanNameHook as any);
-          }
-        }
-
-
         return moduleExport;
       },
       moduleExport => {
-        for (const functionName of functions instanceof Array ? functions : Object.keys(functions)) {
-          this._unwrap(moduleExport, functionName);
+        for (const functionName of functions) {
+          this._unwrap(moduleTransform(moduleExport), functionName);
         }
       }
     );

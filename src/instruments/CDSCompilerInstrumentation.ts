@@ -32,7 +32,15 @@ export class CDSCompilerServiceInstrumentation extends CDSBaseServiceInstrumenta
           "preparedCsnToEdmx",
           "preparedCsnToEdmxAll",
         ]
-      )
+      ),
+      this._createSimplePatchFile(
+        "@sap/cds-compiler/lib/main.js",
+        [
+          "compile",
+          "compileSync",
+          "compileSources",
+        ],
+      ),
     );
 
     return module;
