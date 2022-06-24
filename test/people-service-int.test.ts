@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
-import "../src";
 
 describe("People Service Int Test", () => {
-
+  require("../src");
   const cds = require("@sap/cds");
 
   /**
