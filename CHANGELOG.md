@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.13](https://github.com/Soontao/opentelemetry-cds/compare/v0.0.12...v0.0.13) (2022-06-24)
+
+
+### Features
+
+* better terminate ([bdadb26](https://github.com/Soontao/opentelemetry-cds/commit/bdadb26bce383a8e3e8cc14c34bd1143973822dc))
+
 ### [0.0.12](https://github.com/Soontao/opentelemetry-cds/compare/v0.0.11...v0.0.12) (2022-06-23)
 
 
