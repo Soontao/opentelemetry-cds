@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.14](https://github.com/Soontao/opentelemetry-cds/compare/v0.0.13...v0.0.14) (2022-06-28)
+
+
+### Features
+
+* better instrument for file location ([be3557a](https://github.com/Soontao/opentelemetry-cds/commit/be3557a9b9546ad4d63e31377f81abc7c5350e05))
+* better odata batch ([aa7e129](https://github.com/Soontao/opentelemetry-cds/commit/aa7e129cf692931e23547498010b125b854749d9))
+
 ### [0.0.13](https://github.com/Soontao/opentelemetry-cds/compare/v0.0.12...v0.0.13) (2022-06-24)
 
 
