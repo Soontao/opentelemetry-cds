@@ -20,6 +20,7 @@ import { CDSServiceInstrumentation } from "./instruments/CDSServiceInstrumentati
 import { HanaInstrumentation } from "./instruments/HanaInstrumentation";
 import { ODataAdapterInstrumentation } from "./instruments/ODataAdapterInstrumentation";
 import { SqliteInstrumentation } from "./instruments/SqliteInstrumentation";
+import { SqliteServiceInstrumentation } from "./instruments/SqliteServiceInstrumentation";
 
 const provider = new NodeTracerProvider({
   resource: new Resource({
@@ -48,6 +49,7 @@ registerInstrumentations({
     new DnsInstrumentation(),
     new MySQL2Instrumentation(),
     new SqliteInstrumentation(),
+    new SqliteServiceInstrumentation(),
     new HanaInstrumentation(),
     new CDSNatsInstrumentation(),
   ],

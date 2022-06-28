@@ -54,12 +54,15 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
             {
               startExecutionHook: (span, thisValue) => {
                 const plainHttpRequest = thisValue?._request?.getIncomingRequest?.();
+                const boundary = thisValue?._batchContext?.getBoundary?.();
                 if (plainHttpRequest !== undefined) {
                   span.setAttributes({
                     [SemanticAttributes.HTTP_URL]: decodeURIComponent(plainHttpRequest?.url ?? ""),
                     [SemanticAttributes.HTTP_METHOD]: plainHttpRequest?.method,
+                    [CDSSemanticAttributes.CDS_BATCH_MULTIPART_BOUNDARY]: boundary,
                   });
                 }
+                // TODO: set inner response status code
               }
             }
           );

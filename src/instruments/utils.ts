@@ -11,7 +11,7 @@ import Module from "module";
  */
 export function getEntityNameFromQuery(query: any | Array<any>): string | undefined {
   if (query instanceof Array) {
-    return `[${query.map(getEntityNameFromQuery).filter(Boolean).join(", ")}]`;
+    return `[MULTI ENTITIES]`;
   }
   if (typeof query === "string") {
     return query;
@@ -31,15 +31,6 @@ export const findObjectInRequireCache = memorized(function findObjectInRequireCa
     if (module !== undefined) {
       if (module.exports === obj || (module.exports?.__esModule === true && module.exports?.default === obj)) {
         return module;
-      }
-      // find module.exports = { target: {} }
-      if (typeof module.exports === "object") {
-        for (const [key, describer] of Object.entries(Object.getOwnPropertyDescriptors(module.exports))) {
-          // not getter and object equal
-          if (describer.get === undefined && module.exports[key] === obj) {
-            return module;
-          }
-        }
       }
       // find module.exports = class { target() {} }
       if (typeof module.exports?.prototype === "object") {

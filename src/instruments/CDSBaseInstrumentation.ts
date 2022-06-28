@@ -62,7 +62,7 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
   protected _simpleMeasure(moduleExport: any, moduleName: string, functionName: string, hooks?: Hooks) {
 
     this._wrap(moduleExport, functionName, (original) => {
-      const spanName = `${moduleName}.${functionName}`;
+      const spanName = `${moduleName} ${functionName}`;
       return this._createWrapForNormalFunction(
         spanName,
         original,
