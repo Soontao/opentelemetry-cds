@@ -107,7 +107,7 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
             {},
             {
               startExecutionHook: (span, _thisValue, args) => {
-                span.setAttribute(CDSSemanticAttributes.APP_SERVICE_NAME, args?.[0].name);
+                span.setAttribute(CDSSemanticAttributes.CDS_APP_SERVICE_NAME, args?.[0]?.name);
               }
             }
           );

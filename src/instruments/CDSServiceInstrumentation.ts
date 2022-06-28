@@ -8,10 +8,11 @@ import {
   InstrumentationNodeModuleFile
 } from "@opentelemetry/instrumentation";
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
+import path from "path";
 import { CDSSemanticAttributes } from "../attributes";
 import { version } from "../version.json";
 import { CDSBaseServiceInstrumentation } from "./CDSBaseInstrumentation";
-import { getEntityNameFromQuery } from "./utils";
+import { findObjectInRequireCache, getEntityNameFromQuery } from "./utils";
 
 export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
 
@@ -46,10 +47,16 @@ export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
             return function (this: any) {
               const handler = arguments[arguments.length - 1];
               if (typeof handler === "function") {
+                // try to get filepath for function
+                const wrapOpt: any = { attributes: {} };
+                const m = findObjectInRequireCache(handler);
+                if (m !== undefined) {
+                  wrapOpt.attributes[SemanticAttributes.CODE_FILEPATH] = path.relative(process.cwd(), m.filename);
+                }
                 const proxyHandler = inst._createWrapForNormalFunction(
                   "handler proxy",
                   handler,
-                  {},
+                  wrapOpt,
                   {
                     startExecutionHook: (span, thisValue, args) => {
                       const { name } = thisValue;
@@ -111,7 +118,7 @@ export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
                 };
 
                 if (kind === "app-service") {
-                  attributes[CDSSemanticAttributes.APP_SERVICE_NAME] = name;
+                  attributes[CDSSemanticAttributes.CDS_APP_SERVICE_NAME] = name;
                 }
 
                 if (name === "db") {

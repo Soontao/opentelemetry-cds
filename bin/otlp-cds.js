@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 require("../lib/index");
-require("@sap/cds/bin/cds").exec();
+require(require.resolve("@sap/cds/bin/cds", { paths: [process.cwd()] })).exec();

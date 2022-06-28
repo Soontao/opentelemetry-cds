@@ -1,4 +1,8 @@
 /* eslint-disable max-len */
+
+import { memorized } from "cds-internal-tool";
+import Module from "module";
+
 /**
  * get a read able entity for query
  * 
@@ -19,6 +23,36 @@ export function getEntityNameFromQuery(query: any | Array<any>): string | undefi
     query?.DELETE?.from;
 }
 
+/**
+ * try to find the object module name
+ */
+export const findObjectInRequireCache = memorized(function findObjectInRequireCache(obj: any): Module | undefined {
+  for (const module of Object.values(require.cache)) {
+    if (module !== undefined) {
+      if (module.exports === obj || (module.exports?.__esModule === true && module.exports?.default === obj)) {
+        return module;
+      }
+      // find module.exports = { target: {} }
+      if (typeof module.exports === "object") {
+        for (const [key, describer] of Object.entries(Object.getOwnPropertyDescriptors(module.exports))) {
+          // not getter and object equal
+          if (describer.get === undefined && module.exports[key] === obj) {
+            return module;
+          }
+        }
+      }
+      // find module.exports = class { target() {} }
+      if (typeof module.exports?.prototype === "object") {
+        for (const [key, describer] of Object.entries(Object.getOwnPropertyDescriptors(module.exports.prototype))) {
+          // not getter and object equal
+          if (describer.get === undefined && module.exports.prototype[key] === obj) {
+            return module;
+          }
+        }
+      }
+    }
+  }
+}, 1, 1024);
 
 /**
  * get entity name from select query
