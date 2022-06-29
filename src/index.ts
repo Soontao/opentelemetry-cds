@@ -15,6 +15,7 @@ import os from "os";
 import path from "path";
 import process from "process";
 import { CDSCompilerServiceInstrumentation } from "./instruments/CDSCompilerInstrumentation";
+import { CDSEventInstrumentation } from "./instruments/CDSEventInstrumentation";
 import { CDSNatsInstrumentation } from "./instruments/CDSNatsInstrumentation";
 import { CDSServiceInstrumentation } from "./instruments/CDSServiceInstrumentation";
 import { HanaInstrumentation } from "./instruments/HanaInstrumentation";
@@ -42,6 +43,7 @@ registerInstrumentations({
     new HttpInstrumentation(),
     new ExpressInstrumentation(),
     new CDSServiceInstrumentation(),
+    new CDSEventInstrumentation(),
     new CDSCompilerServiceInstrumentation(),
     new ODataAdapterInstrumentation(),
     new GenericPoolInstrumentation(),

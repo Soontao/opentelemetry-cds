@@ -52,7 +52,7 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
             original,
             {},
             {
-              startExecutionHook: (span, thisValue) => {
+              beforeExecutionHook: (span, thisValue) => {
                 const plainHttpRequest = thisValue?._request?.getIncomingRequest?.();
                 const boundary = thisValue?._batchContext?.getBoundary?.();
                 if (plainHttpRequest !== undefined) {
@@ -109,7 +109,7 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
             original,
             {},
             {
-              startExecutionHook: (span, _thisValue, args) => {
+              beforeExecutionHook: (span, _thisValue, args) => {
                 span.setAttribute(CDSSemanticAttributes.CDS_APP_SERVICE_NAME, args?.[0]?.name);
               }
             }

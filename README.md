@@ -28,6 +28,9 @@ npm i -S opentelemetry-cds
 
 - [x] Service-dispatch
 - [x] EventHandlers
+- [x] EventContext/Event/Request
+  - [x] register (on/once/before)
+  - [x] emit
 - [x] OData Adapter
   - [x] `process`
   - [x] `execute`

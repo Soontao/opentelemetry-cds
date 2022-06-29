@@ -58,7 +58,7 @@ export abstract class DatabaseInstrumentation extends CDSBaseServiceInstrumentat
           }
         },
         {
-          startExecutionHook: (span, _thisValue, args) => {
+          beforeExecutionHook: (span, _thisValue, args) => {
             if (typeof args?.[0] === "string") {
               span.setAttribute(SemanticAttributes.DB_OPERATION, args[0]);
             }

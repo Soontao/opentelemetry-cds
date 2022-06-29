@@ -8,11 +8,12 @@ import {
   InstrumentationNodeModuleFile
 } from "@opentelemetry/instrumentation";
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
+import { Request } from "cds-internal-tool";
 import path from "path";
 import { CDSSemanticAttributes } from "../attributes";
 import { version } from "../version.json";
 import { CDSBaseServiceInstrumentation } from "./CDSBaseInstrumentation";
-import { findObjectInRequireCache, getEntityNameFromQuery } from "./utils";
+import { extractAttributesFromReq, findObjectInRequireCache, getEntityNameFromQuery } from "./utils";
 
 export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
 
@@ -58,7 +59,7 @@ export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
                   handler,
                   wrapOpt,
                   {
-                    startExecutionHook: (span, thisValue, args) => {
+                    beforeExecutionHook: (span, thisValue, args) => {
                       const { name } = thisValue;
                       switch (handlerRegisterHook) {
                         case "on": case "before":
@@ -105,7 +106,7 @@ export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
             original,
             {},
             {
-              startExecutionHook: (span, thisValue, args) => {
+              beforeExecutionHook: (span, thisValue, args) => {
                 const { name, kind } = thisValue;
 
                 const req = args?.[0] ?? {};
@@ -151,18 +152,8 @@ export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
     );
   }
 
-  protected _extractAttributesFromReq(req: any) {
-    if (typeof req !== "object") {
-      return {};
-    }
-    return {
-      [SemanticAttributes.ENDUSER_ID]: req?.user?.id,
-      [CDSSemanticAttributes.CDS_TENANT_ID]: req?.tenant,
-      [CDSSemanticAttributes.CDS_REQUEST_TARGET]: req?.target,
-      [CDSSemanticAttributes.CDS_REQUEST_EVENT]: req?.event,
-      [CDSSemanticAttributes.CDS_REQUEST_ID]: req?.id,
-      [CDSSemanticAttributes.CDS_QUERY_ENTITIES]: getEntityNameFromQuery(req?.query),
-    };
+  protected _extractAttributesFromReq(req: Request) {
+    return extractAttributesFromReq(req);
   }
 
 }

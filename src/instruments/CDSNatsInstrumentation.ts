@@ -35,7 +35,7 @@ export class CDSNatsInstrumentation extends CDSBaseServiceInstrumentation {
         const inst = this;
         this._wrap(moduleExport.prototype, "_publish", (original: any) => {
           return inst._createWrapForNormalFunction("nats - message out", original, { kind: SpanKind.CLIENT }, {
-            startExecutionHook(span, thisValue, args) {
+            beforeExecutionHook(span, thisValue, args) {
               const headers = args?.[2];
               if (headers !== undefined) {
                 propagation.inject(api.context.active(), headers, NatsHeadersAccessor);

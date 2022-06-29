@@ -8,15 +8,22 @@ import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
 
 export type SpanNameHook = (thisValue: any, args: IArguments) => string;
 export type Done = (this: any, error?: any) => void;
-export type StartExecutionHook = (span: Span, thisValue: any, args: IArguments) => void;
-
+export type BeforeExecutionHook = (span: Span, thisValue: any, args: IArguments) => void;
+export type ExecutionHook = (span: Span, thisValue: any, original: any, args: IArguments) => any;
 export type ModuleTransform = (moduleExport: any) => any;
 
 export interface Hooks {
   /**
    * hook which invocated before the original function is invoked
    */
-  startExecutionHook?: StartExecutionHook;
+  beforeExecutionHook?: BeforeExecutionHook;
+
+  /**
+   * hook used for execute original function
+   */
+  executionHook?: ExecutionHook;
+
+
 }
 
 export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase {
@@ -105,13 +112,6 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
     );
   }
 
-  private _executeHooks(span: Span, thisValue: any, args: IArguments, hooks?: Hooks) {
-    if (hooks === undefined) {
-      return;
-    }
-    hooks?.startExecutionHook?.(span, thisValue, args);
-  }
-
   protected _createWrapForNormalFunction(
     spanName: string,
     original: (...args: Array<any>) => void,
@@ -124,10 +124,15 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
       return api.context.with(
         api.trace.setSpan(api.context.active(), newSpan),
         () => {
-          inst._executeHooks(newSpan, this, arguments, hooks);
+          hooks?.beforeExecutionHook?.(newSpan, this, arguments);
           let r: any;
           try {
-            r = original.apply(this, arguments as any);
+            if (typeof hooks?.executionHook === "function") {
+              r = hooks.executionHook(newSpan, this, original, arguments);
+            }
+            else {
+              r = original.apply(this, arguments as any);
+            }
           }
           catch (error) {
             newSpan.recordException(error);
@@ -169,7 +174,7 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
       return api.context.with(
         api.trace.setSpan(api.context.active(), newSpan),
         () => {
-          inst._executeHooks(newSpan, this, arguments, hooks);
+          hooks?.beforeExecutionHook?.(newSpan, this, arguments);
           function done(error?: any) {
             if (error) {
               newSpan.recordException(error);
@@ -179,16 +184,20 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
           }
           const cb = arguments?.[arguments.length - 1];
           if (typeof cb === "function") {
-            return original.apply(
-              this,
-              Array
-                .from(arguments)
-                .slice(0, arguments.length - 1)
-                .concat(function wrapCb(this: any) {
-                  done?.apply(this, arguments as any);
-                  cb?.apply(this, arguments);
-                })
-            );
+            const newArguments = Array
+              .from(arguments)
+              .slice(0, arguments.length - 1)
+              .concat(function wrapCb(this: any) {
+                done?.apply(this, arguments as any);
+                cb?.apply(this, arguments);
+              });
+            if (typeof hooks?.executionHook === "function") {
+              return hooks.executionHook(newSpan, this, original, newArguments as any);
+            }
+            else {
+              return original.apply(this, newArguments);
+            }
+
           }
           return original.apply(this, arguments as any);
         }) as unknown as any;

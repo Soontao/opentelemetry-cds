@@ -1,7 +1,9 @@
 /* eslint-disable max-len */
 
-import { memorized } from "cds-internal-tool";
+import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
+import { memorized, Request } from "cds-internal-tool";
 import Module from "module";
+import { CDSSemanticAttributes } from "../attributes";
 
 /**
  * get a read able entity for query
@@ -54,4 +56,18 @@ export const findObjectInRequireCache = memorized(function findObjectInRequireCa
 function selectQuery(query: any): string | undefined {
   return query?.SELECT?.from?.ref?.map?.((ref: string | any) => typeof ref === "string" ? ref : ref?.id ?? JSON.stringify(ref))?.join(", ") ??
     query?.SELECT?.from?.args?.map?.((arg: any) => arg?.ref?.[0])?.join?.(" join ");
+}
+
+export function extractAttributesFromReq(req: Request) {
+  if (typeof req !== "object") {
+    return {};
+  }
+  return {
+    [SemanticAttributes.ENDUSER_ID]: req?.user?.id,
+    [CDSSemanticAttributes.CDS_TENANT_ID]: req?.tenant,
+    [CDSSemanticAttributes.CDS_REQUEST_TARGET]: req?.target?.name,
+    [CDSSemanticAttributes.CDS_REQUEST_EVENT]: req?.event,
+    [CDSSemanticAttributes.CDS_REQUEST_ID]: req?.id,
+    [CDSSemanticAttributes.CDS_QUERY_ENTITIES]: getEntityNameFromQuery(req?.query),
+  };
 }
