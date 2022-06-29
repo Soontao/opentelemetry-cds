@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.15](https://github.com/Soontao/opentelemetry-cds/compare/v0.0.14...v0.0.15) (2022-06-29)
+
+
+### Features
+
+* instrument for event context ([cfc956c](https://github.com/Soontao/opentelemetry-cds/commit/cfc956c96ce79e8462a64a994775ca740470887e))
+
 ### [0.0.14](https://github.com/Soontao/opentelemetry-cds/compare/v0.0.13...v0.0.14) (2022-06-28)
 
 
