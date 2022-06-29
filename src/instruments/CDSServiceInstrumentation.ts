@@ -8,12 +8,10 @@ import {
   InstrumentationNodeModuleFile
 } from "@opentelemetry/instrumentation";
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
-import { Request } from "cds-internal-tool";
 import path from "path";
-import { CDSSemanticAttributes } from "../attributes";
 import { version } from "../version.json";
 import { CDSBaseServiceInstrumentation } from "./CDSBaseInstrumentation";
-import { extractAttributesFromReq, findObjectInRequireCache, getEntityNameFromQuery } from "./utils";
+import { extractAttributesFromReq, findObjectInRequireCache } from "./utils";
 
 export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
 
@@ -28,7 +26,6 @@ export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
     );
 
     module.files.push(
-      this._createPatchForServiceDispatch(),
       this._createPatchForServiceHandler(),
     );
 
@@ -63,10 +60,10 @@ export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
                       const { name } = thisValue;
                       switch (handlerRegisterHook) {
                         case "on": case "before":
-                          span.setAttributes(inst._extractAttributesFromReq(args?.[0]));
+                          span.setAttributes(extractAttributesFromReq(args?.[0]));
                           break;
                         case "after":
-                          span.setAttributes(inst._extractAttributesFromReq(args?.[1]));
+                          span.setAttributes(extractAttributesFromReq(args?.[1]));
                           break;
                       }
                       span.updateName(`${name} - hook ${handlerRegisterHook} ${handler.name || "<anonymous>"}`);
@@ -90,70 +87,6 @@ export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
     );
   }
 
-  private _createPatchForServiceDispatch() {
-    const moduleName = "@sap/cds/lib/serve/Service-dispatch.js";
-    return new InstrumentationNodeModuleFile<any>(
-      moduleName,
-      ["*"],
-      /**
-       * @param exportedModule 
-       */
-      (exportedModule) => {
-        this._wrap(exportedModule, "dispatch", (original: any) => {
 
-          return this._createWrapForNormalFunction(
-            "cds.Service.dispatch",
-            original,
-            {},
-            {
-              beforeExecutionHook: (span, thisValue, args) => {
-                const { name, kind } = thisValue;
-
-                const req = args?.[0] ?? {};
-                const attributes = {
-                  [SemanticAttributes.CODE_FILEPATH]: moduleName,
-                  [SemanticAttributes.CODE_FUNCTION]: "dispatch",
-                  [CDSSemanticAttributes.CDS_SERVICE_KIND]: kind,
-                  [CDSSemanticAttributes.CDS_SERVICE_NAME]: name,
-                  ...this._extractAttributesFromReq(req),
-                };
-
-                if (kind === "app-service") {
-                  attributes[CDSSemanticAttributes.CDS_APP_SERVICE_NAME] = name;
-                }
-
-                if (name === "db") {
-                  // if is database service
-                  attributes[SemanticAttributes.DB_OPERATION] = Object.keys(req?.query ?? {})?.[0] ?? req?.method ?? "Unknown";
-                  attributes[SemanticAttributes.DB_SYSTEM] = kind;
-                }
-
-                span.setAttributes(attributes);
-
-                const spanParts = [
-                  kind,
-                  name,
-                  "-",
-                  req?.event ?? (req?.query instanceof Array ? "MULTI OPERATION" : undefined),
-                  req?.target?.name ?? getEntityNameFromQuery(req?.query),
-                ];
-
-                span.updateName(spanParts.filter(Boolean).join(" "));
-
-              }
-            }
-          );
-        });
-        return exportedModule;
-      },
-      (exportedModule) => {
-        this._unwrap(exportedModule, "dispatch");
-      },
-    );
-  }
-
-  protected _extractAttributesFromReq(req: Request) {
-    return extractAttributesFromReq(req);
-  }
 
 }

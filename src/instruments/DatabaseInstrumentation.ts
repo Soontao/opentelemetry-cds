@@ -49,7 +49,7 @@ export abstract class DatabaseInstrumentation extends CDSBaseServiceInstrumentat
     const className = classObject?.name ?? "Unknown";
     this._wrap(classObject?.prototype, functionName, (original) => {
       return this._createWrapForCbFunction(
-        `${className}.${functionName}`,
+        `${this._config.packageName} - ${className}.${functionName}`,
         original,
         {
           kind: SpanKind.CLIENT,
