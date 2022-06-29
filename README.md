@@ -65,6 +65,19 @@ npm i -S opentelemetry-cds
 OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 ```
 
+### Local Setup
+
+> view the trace in a local jaeger server
+
+1. [Download Jaeger Binary for your OS](https://www.jaegertracing.io/download/)
+1. Extract it
+1. Run it with otlp enabled flag 
+1. Start your cds application with `otlp-cds run`
+
+```bash
+./jaeger-all-in-one --collector.otlp.enabled
+```
+
 ## Screenshots
 
 > batch operations
