@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.16](https://github.com/Soontao/opentelemetry-cds/compare/v0.0.15...v0.0.16) (2022-06-29)
+
+
+### Bug Fixes
+
+* auth issue, remove service-dispatch instrument ([a7b855c](https://github.com/Soontao/opentelemetry-cds/commit/a7b855c77ca1114e7034ce775bb00591ed5b53fa))
+
 ### [0.0.15](https://github.com/Soontao/opentelemetry-cds/compare/v0.0.14...v0.0.15) (2022-06-29)
 
 
