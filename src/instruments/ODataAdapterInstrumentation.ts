@@ -24,7 +24,7 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
   protected init(): InstrumentationModuleDefinition<any> {
     const module = new InstrumentationNodeModuleDefinition<any>(
       "@sap/cds",
-      ["5.*"]
+      ["5.*", "6.*"]
     );
 
 
@@ -41,7 +41,7 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
     const moduleName = `${_okra}/odata-server/batch/BatchedRequestExecutor.js`;
     return new InstrumentationNodeModuleFile<any>(
       moduleName,
-      ["5.*"],
+      ["5.*", "6.*"],
       /**
        * @param exportedModule 
        */
@@ -80,7 +80,7 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
     const moduleName = `${_okra}/odata-server/batch/BatchProcessor.js`;
     return new InstrumentationNodeModuleFile<any>(
       moduleName,
-      ["5.*"],
+      ["5.*", "6.*"],
       /**
        * @param exportedModule 
        */
@@ -98,7 +98,7 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
   private createPatchForUtils() {
     return new InstrumentationNodeModuleFile<any>(
       `${_odata_v4}/utils/dispatcherUtils.js`,
-      ["5.*"],
+      ["5.*", "6.*"],
       /**
        * @param exportedModule 
        */

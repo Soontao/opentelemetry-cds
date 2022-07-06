@@ -13,7 +13,7 @@ export class SqliteInstrumentation extends DatabaseInstrumentation {
       {
         ...options,
         packageName: "sqlite3",
-        version: ["5.*"],
+        version: ["5.*", "6.*"],
         classExporter: (moduleExport) => moduleExport.Database,
         functions: ["get", "all", "run", "prepare"]
       }

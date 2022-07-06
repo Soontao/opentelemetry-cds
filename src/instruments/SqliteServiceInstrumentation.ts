@@ -15,7 +15,7 @@ export class SqliteServiceInstrumentation extends CDSBaseServiceInstrumentation 
   protected init(): InstrumentationModuleDefinition<any> {
     const module = new InstrumentationNodeModuleDefinition<any>(
       "@sap/cds",
-      ["5.*"],
+      ["5.*", "6.*"],
     );
 
     module.files.push(
