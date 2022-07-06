@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.1.0](https://github.com/Soontao/opentelemetry-cds/compare/v0.0.16...v0.1.0) (2022-07-06)
+
+
+### Features
+
+* renovate auto merge ([2e12242](https://github.com/Soontao/opentelemetry-cds/commit/2e12242a3f8e6e5d3631172703386095cee02a69))
+
 ### [0.0.16](https://github.com/Soontao/opentelemetry-cds/compare/v0.0.15...v0.0.16) (2022-06-29)
 
 
