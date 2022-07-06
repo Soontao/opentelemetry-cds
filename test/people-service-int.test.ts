@@ -38,7 +38,7 @@ describe("People Service Int Test", () => {
       "Age": 18,
       "ID": testPeopleID,
       "Name": "theo valid",
-      "Weight": null,
+      "Weight": 9999,
     });
     const getResponse = await axios.get(`/people/EarthPeoples(${testPeopleID})`);
     expect(getResponse.status).toBe(200);

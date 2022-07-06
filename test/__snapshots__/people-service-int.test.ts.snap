@@ -7,7 +7,7 @@ Object {
   "Age": 18,
   "ID": "18f3dfbf-92e2-4e50-a14d-ca120fb3aff5",
   "Name": "Theo for Snapshot",
-  "Weight": null,
+  "Weight": 9999,
 }
 `;
 
