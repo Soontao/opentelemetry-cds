@@ -9,6 +9,7 @@ import {
 } from "@opentelemetry/instrumentation";
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
 import path from "path";
+import { CDSSemanticAttributes } from "../attributes";
 import { version } from "../version.json";
 import { CDSBaseServiceInstrumentation } from "./CDSBaseInstrumentation";
 import { extractAttributesFromReq, findObjectInRequireCache } from "./utils";
@@ -58,15 +59,22 @@ export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
                   {
                     beforeExecutionHook: (span, thisValue, args) => {
                       const { name } = thisValue;
+                      let attributes: any = {};
                       switch (handlerRegisterHook) {
                         case "on": case "before":
-                          span.setAttributes(extractAttributesFromReq(args?.[0]));
+                          attributes = extractAttributesFromReq(args?.[0]);
                           break;
                         case "after":
-                          span.setAttributes(extractAttributesFromReq(args?.[1]));
+                          attributes = extractAttributesFromReq(args?.[1]);
                           break;
                       }
-                      span.updateName(`${name} - hook ${handlerRegisterHook} ${handler.name || "<anonymous>"}`);
+                      span.setAttributes(attributes);
+                      const event = attributes?.[CDSSemanticAttributes.CDS_REQUEST_EVENT];
+                      if (typeof event === "string") {
+                        span.updateName(`${name} - hook ${handlerRegisterHook} - event ${event} - ${handler.name || "<anonymous>"}`);
+                      } else {
+                        span.updateName(`${name} - hook ${handlerRegisterHook} - ${handler.name || "<anonymous>"}`);
+                      }
                     }
                   }
                 );
