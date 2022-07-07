@@ -1,7 +1,7 @@
 {
   "name": "opentelemetry-cds",
   "description": "opentelemetry support for CDS nodejs runtime",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "lib/index.js",
   "bin": {
     "otlp-cds": "./bin/otlp-cds.js"
