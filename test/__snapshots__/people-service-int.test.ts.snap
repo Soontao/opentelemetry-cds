@@ -13,7 +13,7 @@ exports[`People Service Int Test should support snapshot test 1`] = `
 
 exports[`People Service Int Test should support soft delete for EarthPeople 1`] = `
 [
-  UPDATE {
+  Query {
     "UPDATE": {
       "data": {
         "Deleted": true,
