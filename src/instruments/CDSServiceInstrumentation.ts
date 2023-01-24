@@ -35,10 +35,10 @@ export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
 
   private _createPatchForServiceHandler() {
     const handlerRegisterHooks = ["before", "on", "after"];
-    const moduleName = "@sap/cds/lib/serve/Service-handlers.js";
+    const moduleName = "@sap/cds/lib/srv/srv-handlers.js";
     return new InstrumentationNodeModuleFile<any>(
       moduleName,
-      ["*"],
+      [">=6.4 <7.0"],
       moduleExport => {
         const inst = this;
         for (const handlerRegisterHook of handlerRegisterHooks) {
