@@ -26,7 +26,7 @@
     "@opentelemetry/instrumentation": "0.36.0",
     "@opentelemetry/instrumentation-dns": "^0.31.0",
     "@opentelemetry/instrumentation-express": "^0.32.0",
-    "@opentelemetry/instrumentation-generic-pool": "^0.30.0",
+    "@opentelemetry/instrumentation-generic-pool": "^0.31.0",
     "@opentelemetry/instrumentation-http": "0.36.0",
     "@opentelemetry/instrumentation-mysql2": "^0.32.1",
     "@opentelemetry/instrumentation-net": "^0.30.2",
