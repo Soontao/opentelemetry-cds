@@ -23,7 +23,7 @@
   "dependencies": {
     "@opentelemetry/api": "^1.2.0",
     "@opentelemetry/exporter-trace-otlp-http": "^0.41.0",
-    "@opentelemetry/instrumentation": "0.41.0",
+    "@opentelemetry/instrumentation": "0.41.2",
     "@opentelemetry/instrumentation-dns": "^0.32.0",
     "@opentelemetry/instrumentation-express": "^0.33.0",
     "@opentelemetry/instrumentation-generic-pool": "^0.32.0",
