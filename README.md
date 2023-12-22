@@ -19,7 +19,7 @@ npm i -S opentelemetry-cds
 ```json
 {
   "scripts": {
-    "start": "otlp-cds run"
+    "start": "otlp-cds-serve"
   }
 }
 ```
@@ -56,7 +56,7 @@ npm i -S opentelemetry-cds
 - [ ] cloud foundry support
 - [ ] k8s support
 - [ ] environment variables
-- [x] `otlp-cds` command
+- [x] `otlp-cds-serve` command
 
 ## Configuration
 
@@ -74,7 +74,7 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 1. [Download Jaeger Binary for your OS](https://www.jaegertracing.io/download/)
 1. Extract it
 1. Run it with otlp enabled flag 
-1. Start your cds application with `otlp-cds run`
+1. Start your cds application with `npx otlp-cds-serve`
 
 ```bash
 ./jaeger-all-in-one --collector.otlp.enabled

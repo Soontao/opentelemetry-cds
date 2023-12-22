@@ -4,11 +4,11 @@
   "version": "0.1.1",
   "main": "lib/index.js",
   "bin": {
-    "otlp-cds": "./bin/otlp-cds.js"
+    "otlp-cds-serve": "./bin/otlp-cds-serve.js"
   },
   "engines": {
-    "node": ">=14",
-    "npm": ">=7"
+    "node": ">=18",
+    "npm": ">=8"
   },
   "scripts": {
     "pretest": "bash install_no_trace_deps.sh",

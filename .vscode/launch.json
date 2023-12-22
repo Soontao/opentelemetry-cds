@@ -6,17 +6,18 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": [
         "ts-node",
-        "${workspaceFolder}/bin/otlp-cds.js",
-        "run"
+        "${workspaceFolder}/bin/otlp-cds-serve.js",
       ],
       "env": {
-        "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:4318"
+        "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:4318",
+        "CDS_OTEL_INTERNAL_TEST": "true"
       },
       "cwd": "${workspaceFolder}/test/app",
       "request": "launch",
       "skipFiles": [
         "<node_internals>/**"
       ],
+      "sourceMaps": true,
       "type": "node"
     },
     {

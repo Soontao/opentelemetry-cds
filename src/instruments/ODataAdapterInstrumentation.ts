@@ -24,14 +24,14 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
   protected init(): InstrumentationModuleDefinition<any> {
     const module = new InstrumentationNodeModuleDefinition<any>(
       "@sap/cds",
-      ["5.*", "6.*"]
+      ["7.*"]
     );
 
 
     module.files.push(
       this.createPatchForExecuteOpenRequests(),
       this.createPatchForODataExecutor(),
-      this.createPatchForUtils(),
+      this.createPatchForService(),
     );
 
     return module;
@@ -41,7 +41,7 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
     const moduleName = `${_okra}/odata-server/batch/BatchedRequestExecutor.js`;
     return new InstrumentationNodeModuleFile<any>(
       moduleName,
-      ["5.*", "6.*"],
+      ["6.*", "7.*"],
       /**
        * @param exportedModule 
        */
@@ -80,7 +80,7 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
     const moduleName = `${_okra}/odata-server/batch/BatchProcessor.js`;
     return new InstrumentationNodeModuleFile<any>(
       moduleName,
-      ["5.*", "6.*"],
+      ["6.*", "7.*"],
       /**
        * @param exportedModule 
        */
@@ -95,22 +95,22 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
   }
 
 
-  private createPatchForUtils() {
+  private createPatchForService() {
     return new InstrumentationNodeModuleFile<any>(
-      `${_odata_v4}/utils/dispatcherUtils.js`,
-      ["5.*", "6.*"],
+      `${_okra}/odata-server/core/Service.js`,
+      ["7.*"],
       /**
        * @param exportedModule 
        */
       (exportedModule) => {
-        this._wrap(exportedModule, "createOdataService", (original: any) => {
+        this._wrap(exportedModule.prototype, "process", (original: any) => {
           return this._createWrapForNormalFunction(
-            "createOdataService",
+            "process",
             original,
             {},
             {
-              beforeExecutionHook: (span, _thisValue, args) => {
-                span.setAttribute(CDSSemanticAttributes.CDS_APP_SERVICE_NAME, args?.[0]?.name);
+              beforeExecutionHook: (span, _thisValue, [req, _res]) => {
+                span.updateName(["odata.execute - single batch request", req.method, req.originalUrl].join(" - "));
               }
             }
           );
@@ -118,7 +118,7 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
         return exportedModule;
       },
       (exportedModule) => {
-        this._unwrap(exportedModule, "createOdataService");
+        this._unwrap(exportedModule.prototype, "process");
       },
     );
   }

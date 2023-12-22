@@ -23,7 +23,7 @@ export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
   protected init(): InstrumentationModuleDefinition<any> {
     const module = new InstrumentationNodeModuleDefinition<any>(
       "@sap/cds",
-      ["5.*", "6.*"]
+      ["6.*", "7.*"],
     );
 
     module.files.push(
@@ -38,7 +38,7 @@ export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
     const moduleName = "@sap/cds/lib/srv/srv-handlers.js";
     return new InstrumentationNodeModuleFile<any>(
       moduleName,
-      [">=6.4 <7.0"],
+      ["6.*", "7.*"],
       moduleExport => {
         const inst = this;
         for (const handlerRegisterHook of handlerRegisterHooks) {

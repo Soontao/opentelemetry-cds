@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { registerInstrumentations } from "@opentelemetry/instrumentation";

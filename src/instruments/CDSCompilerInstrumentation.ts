@@ -20,7 +20,7 @@ export class CDSCompilerServiceInstrumentation extends CDSBaseServiceInstrumenta
   protected init(): InstrumentationModuleDefinition<any> {
     const module = new InstrumentationNodeModuleDefinition<any>(
       "@sap/cds-compiler",
-      ["2.*", "3.*"],
+      ["2.*", "3.*", "4.*"],
     );
 
     module.files.push(

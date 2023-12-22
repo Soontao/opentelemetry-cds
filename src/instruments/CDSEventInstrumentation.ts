@@ -20,7 +20,7 @@ export class CDSEventInstrumentation extends CDSBaseServiceInstrumentation {
   protected init(): InstrumentationModuleDefinition<any> {
     const module = new InstrumentationNodeModuleDefinition<any>(
       "@sap/cds",
-      ["5.*", "6.*"]
+      ["6.*", "7.*"],
     );
 
     module.files.push(
