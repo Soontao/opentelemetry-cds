@@ -24,7 +24,7 @@ const NatsHeadersAccessor = {
 export class CDSNatsInstrumentation extends CDSBaseServiceInstrumentation {
 
   constructor(options: InstrumentationConfig = {}) {
-    super("CDSNatsInstrumentation", version, options);
+    super("cds-nats", version, options);
   }
 
   protected init(): InstrumentationModuleDefinition<any> {

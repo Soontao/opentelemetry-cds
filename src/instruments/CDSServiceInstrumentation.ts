@@ -17,7 +17,7 @@ import { extractAttributesFromReq, findObjectInRequireCache } from "./utils";
 export class CDSServiceInstrumentation extends CDSBaseServiceInstrumentation {
 
   constructor(options: InstrumentationConfig = {}) {
-    super("CDSServiceInstrumentation", version, options);
+    super("cds-service", version, options);
   }
 
   protected init(): InstrumentationModuleDefinition<any> {

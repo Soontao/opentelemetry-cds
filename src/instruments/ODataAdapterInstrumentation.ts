@@ -18,7 +18,7 @@ const _okra = `${_odata_v4}/okra`;
 export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
 
   constructor(options: InstrumentationConfig = {}) {
-    super("ODataAdapterInstrumentation", version, options);
+    super("cds-odata", version, options);
   }
 
   protected init(): InstrumentationModuleDefinition<any> {

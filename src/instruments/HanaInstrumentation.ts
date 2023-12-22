@@ -8,7 +8,7 @@ export class HanaInstrumentation extends DatabaseInstrumentation {
 
   constructor(options: InstrumentationConfig = {}) {
     super(
-      "HanaInstrumentation",
+      "cds-hana",
       {
         ...options,
         packageName: "hdb",

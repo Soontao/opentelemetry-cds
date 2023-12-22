@@ -14,7 +14,7 @@ import { extractAttributesFromReq } from "./utils";
 export class CDSEventInstrumentation extends CDSBaseServiceInstrumentation {
 
   constructor(options: InstrumentationConfig = {}) {
-    super("CDSEventInstrumentation", version, options);
+    super("cds-request", version, options);
   }
 
   protected init(): InstrumentationModuleDefinition<any> {

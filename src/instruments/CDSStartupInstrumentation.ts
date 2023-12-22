@@ -14,7 +14,7 @@ import { CDSBaseServiceInstrumentation } from "./CDSBaseInstrumentation";
 export class CDSStartupInstrumentation extends CDSBaseServiceInstrumentation {
 
   constructor(options: InstrumentationConfig = {}) {
-    super("CDSBaseServiceInstrumentation", version, options);
+    super("cds-startup", version, options);
   }
 
   protected init(): InstrumentationModuleDefinition<any> {

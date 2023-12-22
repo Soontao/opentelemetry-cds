@@ -9,7 +9,7 @@ export class SqliteInstrumentation extends DatabaseInstrumentation {
 
   constructor(options: InstrumentationConfig = {}) {
     super(
-      "SqliteInstrumentation",
+      "cds-sqlite",
       {
         ...options,
         packageName: "sqlite3",

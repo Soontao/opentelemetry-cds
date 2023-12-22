@@ -21,7 +21,6 @@ import { CDSServiceInstrumentation } from "./instruments/CDSServiceInstrumentati
 import { HanaInstrumentation } from "./instruments/HanaInstrumentation";
 import { ODataAdapterInstrumentation } from "./instruments/ODataAdapterInstrumentation";
 import { SqliteInstrumentation } from "./instruments/SqliteInstrumentation";
-import { SqliteServiceInstrumentation } from "./instruments/SqliteServiceInstrumentation";
 import { CDSStartupInstrumentation } from "./instruments/CDSStartupInstrumentation";
 import { IncomingMessage } from "http";
 
@@ -59,7 +58,6 @@ registerInstrumentations({
     new DnsInstrumentation(),
     new MySQL2Instrumentation(),
     new SqliteInstrumentation(),
-    new SqliteServiceInstrumentation(),
     new HanaInstrumentation(),
     new CDSNatsInstrumentation(),
   ],
