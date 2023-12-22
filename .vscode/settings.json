@@ -13,8 +13,11 @@
     "autocrlf",
     "edmx",
     "HANADB",
+    "Nats",
     "Odata",
+    "opentelemetry",
     "OTEL",
+    "OTLP",
     "paren"
   ],
   "github.copilot.enable": {
