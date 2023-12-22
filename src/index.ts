@@ -3,7 +3,6 @@
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { registerInstrumentations } from "@opentelemetry/instrumentation";
 import { DnsInstrumentation } from "@opentelemetry/instrumentation-dns";
-import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express";
 import { GenericPoolInstrumentation } from "@opentelemetry/instrumentation-generic-pool";
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
 import { MySQL2Instrumentation } from "@opentelemetry/instrumentation-mysql2";
@@ -23,6 +22,8 @@ import { HanaInstrumentation } from "./instruments/HanaInstrumentation";
 import { ODataAdapterInstrumentation } from "./instruments/ODataAdapterInstrumentation";
 import { SqliteInstrumentation } from "./instruments/SqliteInstrumentation";
 import { SqliteServiceInstrumentation } from "./instruments/SqliteServiceInstrumentation";
+import { CDSStartupInstrumentation } from "./instruments/CDSStartupInstrumentation";
+import { IncomingMessage } from "http";
 
 const provider = new NodeTracerProvider({
   resource: new Resource({
@@ -41,8 +42,14 @@ provider.register();
 
 registerInstrumentations({
   instrumentations: [
-    new HttpInstrumentation(),
-    new ExpressInstrumentation(),
+    new HttpInstrumentation({
+      applyCustomAttributesOnSpan: (span, req) => {
+        if (req instanceof IncomingMessage) {
+          span.updateName(`${req.method} ${(req as any)?.["baseUrl"]} ${req.url!}`);
+        }
+      }
+    }),
+    new CDSStartupInstrumentation(),
     new CDSServiceInstrumentation(),
     new CDSEventInstrumentation(),
     new CDSCompilerServiceInstrumentation(),

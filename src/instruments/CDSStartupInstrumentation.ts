@@ -9,9 +9,9 @@ import { version } from "../version.json";
 import { CDSBaseServiceInstrumentation } from "./CDSBaseInstrumentation";
 
 /**
- * CDS Compiler Service Instrument
+ * CDS Startup Instrumentation
  */
-export class CDSCompilerServiceInstrumentation extends CDSBaseServiceInstrumentation {
+export class CDSStartupInstrumentation extends CDSBaseServiceInstrumentation {
 
   constructor(options: InstrumentationConfig = {}) {
     super("CDSBaseServiceInstrumentation", version, options);
@@ -25,28 +25,10 @@ export class CDSCompilerServiceInstrumentation extends CDSBaseServiceInstrumenta
 
     module.files.push(
       this._createSimplePatchFile(
-        "@sap/cds/lib/compile/cds-compile.js",
+        "@sap/cds/bin/cds-serve.js",
         [
-          "edm",
-          "edmx",
-          "json",
-          "csn",
+          "exec",
         ],
-        m => m.to
-      ),
-    );
-
-    module.files.push(
-      this._createSimplePatchFile(
-        "@sap/cds/lib/compile/cds-compile.js",
-        [
-          "nodejs",
-          "odata",
-          "sql",
-          "drafts",
-          "lean_drafts",
-        ],
-        m => m.for
       ),
     );
 

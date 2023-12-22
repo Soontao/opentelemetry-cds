@@ -159,6 +159,7 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
     if (original?.name !== undefined) {
       Object.defineProperty(redefined, "name", { value: original.name });
     }
+    Object.assign(redefined, original);
     return redefined;
   }
 

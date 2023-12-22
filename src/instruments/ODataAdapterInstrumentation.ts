@@ -110,7 +110,7 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
             {},
             {
               beforeExecutionHook: (span, _thisValue, [req, _res]) => {
-                span.updateName(["odata.execute - single batch request", req.method, req.originalUrl].join(" - "));
+                span.updateName(["odata.execute - single request", req.method, req.originalUrl].join(" - "));
               }
             }
           );
