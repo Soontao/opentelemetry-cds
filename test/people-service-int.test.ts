@@ -16,18 +16,18 @@ describe("People Service Int Test", () => {
   });
 
   it("should support read metadata", async () => {
-    const response = await axios.get("/people/$metadata");
+    const response = await axios.get("/odata/v4/people/$metadata");
     expect(response.data).toMatch(/EarthPeople/);
   });
 
   it("should support validate the length of Name", async () => {
-    const response = await axios.post("/people/EarthPeoples", { "Name": "theo" });
+    const response = await axios.post("/odata/v4/people/EarthPeoples", { "Name": "theo" });
     expect(response.status).toBe(500);
     expect(response.data.error.message).toBe("invalid name");
   });
 
   it("should support create a valid EarthPeople instance", async () => {
-    const response = await axios.post("/people/EarthPeoples", {
+    const response = await axios.post("/odata/v4/people/EarthPeoples", {
       "ID": testPeopleID,
       "Name": "theo valid"
     });
@@ -40,7 +40,7 @@ describe("People Service Int Test", () => {
       "Name": "theo valid",
       "Weight": 9999,
     });
-    const getResponse = await axios.get(`/people/EarthPeoples(${testPeopleID})`);
+    const getResponse = await axios.get(`/odata/v4/people/EarthPeoples(${testPeopleID})`);
     expect(getResponse.status).toBe(200);
     expect(getResponse.data).toMatchObject({
       "@odata.context": "$metadata#EarthPeoples/$entity",
@@ -53,7 +53,7 @@ describe("People Service Int Test", () => {
   });
 
   it("should support update the Age of people", async () => {
-    const response = await axios.patch(`/people/EarthPeoples(${testPeopleID})`, { Age: 99 });
+    const response = await axios.patch(`/odata/v4/people/EarthPeoples(${testPeopleID})`, { Age: 99 });
     expect(response.status).toBe(200);
     expect(response.data).toMatchObject({
       ID: testPeopleID,
@@ -62,13 +62,13 @@ describe("People Service Int Test", () => {
   });
 
   it("should support soft delete for EarthPeople", async () => {
-    const response = await axios.delete(`/people/EarthPeoples(${testPeopleID})`);
+    const response = await axios.delete(`/odata/v4/people/EarthPeoples(${testPeopleID})`);
     expect(response.status).toBe(204);
     // because setup the spy on the cds.db.run
     // so that, you can check the last call of the cds.db.run
     expect(cds.db.run.mock.lastCall).toMatchSnapshot();
     // verify
-    const deletedQuery = await axios.get(`/people/EarthPeoples(${testPeopleID})`);
+    const deletedQuery = await axios.get(`/odata/v4/people/EarthPeoples(${testPeopleID})`);
     expect(deletedQuery.status).toBe(404);
     const dbPeople = await cds.run(SELECT.one.from("db.EarthPeople", testPeopleID));
     expect(dbPeople).not.toBeNull();
@@ -93,7 +93,7 @@ describe("People Service Int Test", () => {
   });
 
   it("should support snapshot test", async () => {
-    const response = await axios.post("/people/EarthPeoples", {
+    const response = await axios.post("/odata/v4/people/EarthPeoples", {
       ID: "18f3dfbf-92e2-4e50-a14d-ca120fb3aff5",
       Name: "Theo for Snapshot"
     });
