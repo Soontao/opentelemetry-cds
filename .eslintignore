@@ -4,3 +4,4 @@ node_modules
 jest.config.js
 /src/version.json
 /bin
+install_optional_deps.js

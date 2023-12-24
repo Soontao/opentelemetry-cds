@@ -11,8 +11,8 @@
     "npm": ">=8"
   },
   "scripts": {
-    "pretest": "bash install_no_trace_deps.sh",
-    "prelint": "bash install_no_trace_deps.sh",
+    "pretest": "node install_optional_deps.js",
+    "prelint": "node install_optional_deps.js",
     "test": "jest --detectOpenHandles --passWithNoTests",
     "build": "tsc",
     "postbuild": "tsc --noEmit --p tsconfig.lib.json",
