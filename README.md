@@ -76,8 +76,12 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 1. Run it with otlp enabled flag 
 1. Start your cds application with `npx otlp-cds-serve`
 
+<!-- access jaeger UI via http://localhost:16686 -->
+
 ```bash
 ./jaeger-all-in-one --collector.otlp.enabled
+# windows
+# jaeger-all-in-one.exe --collector.otlp.enabled
 ```
 
 ## Screenshots
