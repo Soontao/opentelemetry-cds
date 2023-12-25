@@ -63,8 +63,8 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
    * create a simple measure module function
    * 
    * @param moduleExport 
-   * @param moduleName 
-   * @param functionName 
+   * @param moduleName used to build span name
+   * @param functionName used to build span name
    */
   protected _simpleMeasure(moduleExport: any, moduleName: string, functionName: string, hooks?: Hooks) {
 
@@ -110,6 +110,14 @@ export abstract class CDSBaseServiceInstrumentation extends InstrumentationBase 
         }
       }
     );
+  }
+
+  protected _createSimplePatchClass(
+    moduleName: string,
+    functions: Array<string>,
+    moduleTransform: ModuleTransform = v => v.prototype
+  ) {
+    return this._createSimplePatchFile(moduleName, functions, moduleTransform);
   }
 
   protected _createWrapForNormalFunction(

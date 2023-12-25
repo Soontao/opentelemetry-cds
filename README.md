@@ -44,7 +44,6 @@ npm i -S opentelemetry-cds
   - [x] sqlite3 (`Database`.`run`/`prepare`/`all`/`get`)
   - [x] hdb `Client`.`exec`/`prepare`/`commit`/`rollback`
 - [x] third-party instrumentations
-  - [x] express
   - [x] net
   - [x] dns
   - [x] mysql

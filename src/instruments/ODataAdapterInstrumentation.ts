@@ -32,6 +32,7 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
       this.createPatchForExecuteOpenRequests(),
       this.createPatchForODataExecutor(),
       this.createPatchForService(),
+      this.createPatchForCommand("CommandExecutor"),
     );
 
     return module;
@@ -91,6 +92,13 @@ export class ODataAdapterInstrumentation extends CDSBaseServiceInstrumentation {
       (exportedModule) => {
         this._unwrap(exportedModule.prototype, "process");
       },
+    );
+  }
+
+  private createPatchForCommand(name: string) {
+    return this._createSimplePatchClass(
+      `${_okra}/odata-server/invocation/${name}.js`,
+      ["execute"]
     );
   }
 
