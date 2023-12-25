@@ -10,6 +10,7 @@ import {
 import { version } from "../version.json";
 import { CDSBaseServiceInstrumentation } from "./CDSBaseInstrumentation";
 import { extractAttributesFromReq } from "./utils";
+import { LABELS } from "./constants";
 
 export class CDSEventInstrumentation extends CDSBaseServiceInstrumentation {
 
@@ -25,9 +26,42 @@ export class CDSEventInstrumentation extends CDSBaseServiceInstrumentation {
 
     module.files.push(
       this._createPatchForEvent(),
+      this._createPatchForSpawn(),
     );
 
     return module;
+  }
+
+  private _createPatchForSpawn() {
+    return new InstrumentationNodeModuleFile<any>(
+      "@sap/cds/lib/req/cds-context.js",
+      ["*"],
+      (moduleExport) => {
+        this._wrap(moduleExport, "spawn", (original: any) => {
+          return this._createWrapForNormalFunction("cds.spawn", original, {}, {
+            executionHook: (span, thisValue, original, args) => {
+              const [o, fn, cds] = args;
+              if (typeof fn === "function") {
+                const newFn = this._createWrapForNormalFunction(
+                  `spawn task execution ${fn.name ?? LABELS.ANTONYMOUS_FUNC}`,
+                  fn,
+                );
+                return original.apply(thisValue, [o, newFn, cds]);
+              }
+              return original.apply(thisValue, args);
+
+            }
+          });
+        });
+        this._wrap(moduleExport, "run", (original: any) => {
+          return this._createWrapForNormalFunction("cds.context.run", original, { root: true });
+        });
+        return moduleExport;
+      },
+      moduleExport => {
+        this._unwrap(moduleExport, "spawn");
+      }
+    );
   }
 
   private _createPatchForEvent() {
@@ -52,7 +86,7 @@ export class CDSEventInstrumentation extends CDSBaseServiceInstrumentation {
                     `EventContext.register.${handlerRegisterHook}`,
                     "-",
                     eventName,
-                    eventListener.name || "<anonymous>"
+                    eventListener.name ?? LABELS.ANTONYMOUS_FUNC
                   ].join(" "));
 
                   if (typeof eventListener === "function") {
@@ -65,7 +99,7 @@ export class CDSEventInstrumentation extends CDSBaseServiceInstrumentation {
                         eventName,
                         "-",
                         "listener",
-                        eventListener.name || "<anonymous>"
+                        eventListener.name ?? LABELS.ANTONYMOUS_FUNC
                       ].join(" "),
                       eventListener,
                       {},

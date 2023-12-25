@@ -61,6 +61,9 @@ export abstract class DatabaseInstrumentation extends CDSBaseServiceInstrumentat
           beforeExecutionHook: (span, _thisValue, args) => {
             if (typeof args?.[0] === "string") {
               span.setAttribute(SemanticAttributes.DB_OPERATION, args[0]);
+              if (args[0].length <= 10) {
+                span.updateName(`${this._config.packageName}: ${args[0]}`);
+              }
             }
           }
         }

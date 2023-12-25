@@ -7,6 +7,9 @@ module.exports = class PeopleService extends cds.ApplicationService {
     this.before("CREATE", "EarthPeoples", this._validateEarthPeopleCreateion);
     this.after("READ", "EarthPeoples", this._transformEarthPeopleData);
     this.on("DELETE", "EarthPeoples", this._softDeletePeople);
+    cds.spawn({ every: 1000 }, (tx) => {
+      return tx.run(SELECT.one.from(this.entities.EarthPeoples));
+    });
     await super.init();
   }
 

@@ -34,6 +34,7 @@ npm i -S opentelemetry-cds
   - [x] `process`
   - [x] `execute`
   - [x] `createOdataService`
+- [x] async task via `cds.spawn`
 - [x] CDS Compiler
   - [x] edm/edmx/edm.all/edmx.all
 - [ ] Messaging

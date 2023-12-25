@@ -9,7 +9,7 @@ import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
 export type SpanNameHook = (thisValue: any, args: IArguments) => string;
 export type Done = (this: any, error?: any) => void;
 export type BeforeExecutionHook = (span: Span, thisValue: any, args: IArguments) => void;
-export type ExecutionHook = (span: Span, thisValue: any, original: any, args: IArguments) => any;
+export type ExecutionHook = (span: Span, thisValue: any, original: (...args: any) => any, args: IArguments) => any;
 export type ModuleTransform = (moduleExport: any) => any;
 
 export interface Hooks {

@@ -1,0 +1,5 @@
+
+
+export const LABELS = {
+  ANTONYMOUS_FUNC: "<ANTONYMOUS FUNCTION>"
+};
