@@ -26,9 +26,7 @@ export class CDSStartupInstrumentation extends CDSBaseServiceInstrumentation {
     module.files.push(
       this._createSimplePatchFile(
         "@sap/cds/bin/cds-serve.js",
-        [
-          "exec",
-        ],
+        ["exec"],
       ),
     );
 

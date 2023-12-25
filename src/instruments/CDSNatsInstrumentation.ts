@@ -42,8 +42,6 @@ export class CDSNatsInstrumentation extends CDSBaseServiceInstrumentation {
               }
             }
           });
-
-
         });
         this._wrap(moduleExport.prototype, "_handleInboundMessage", (original: any) => {
           return function _handleInboundMessage(this: any) {
@@ -52,7 +50,7 @@ export class CDSNatsInstrumentation extends CDSBaseServiceInstrumentation {
               const newContext = propagation.extract(
                 ROOT_CONTEXT,
                 msg.headers,
-                NatsHeadersAccessor
+                NatsHeadersAccessor,
               );
               const newSpan = inst.tracer.startSpan(
                 "nats - message in",
