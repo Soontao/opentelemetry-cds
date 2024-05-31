@@ -41,5 +41,5 @@ jobs:
       - run: npm run lint --if-present
       
       - name: TODO to Issue
-        uses: alstr/todo-to-issue-action@v4.12.3
+        uses: alstr/todo-to-issue-action@v4.13.1
 
