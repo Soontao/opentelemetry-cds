@@ -24,7 +24,7 @@
     "@opentelemetry/api": "^1.7.0",
     "@opentelemetry/exporter-trace-otlp-http": "^0.54.0",
     "@opentelemetry/instrumentation": "0.54.0",
-    "@opentelemetry/instrumentation-dns": "^0.39.0",
+    "@opentelemetry/instrumentation-dns": "^0.40.0",
     "@opentelemetry/instrumentation-express": "^0.44.0",
     "@opentelemetry/instrumentation-generic-pool": "^0.39.0",
     "@opentelemetry/instrumentation-http": "0.54.0",
